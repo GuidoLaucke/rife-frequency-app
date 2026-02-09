@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { db } from '@/lib/db';
 import { Waves, FileText, Users, ListOrdered, Play } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Frequency, Condition, Person, Sequence } from '@/types';
 
 export function DashboardPage() {
+  const { t } = useTranslation();
   const [stats, setStats] = useState({
     frequencies: 0,
     conditions: 0,
@@ -37,10 +39,10 @@ export function DashboardPage() {
   };
 
   const statCards = [
-    { name: 'Frequencies', value: stats.frequencies, icon: Waves, href: '/frequencies', color: 'primary' },
-    { name: 'Conditions', value: stats.conditions, icon: FileText, href: '/conditions', color: 'accent' },
-    { name: 'Persons', value: stats.persons, icon: Users, href: '/persons', color: 'primary' },
-    { name: 'Sequences', value: stats.sequences, icon: ListOrdered, href: '/sequences', color: 'accent' },
+    { name: t('dashboard.stats.frequencies'), value: stats.frequencies, icon: Waves, href: '/frequencies', color: 'primary' },
+    { name: t('dashboard.stats.conditions'), value: stats.conditions, icon: FileText, href: '/conditions', color: 'accent' },
+    { name: t('dashboard.stats.persons'), value: stats.persons, icon: Users, href: '/persons', color: 'primary' },
+    { name: t('dashboard.stats.sequences'), value: stats.sequences, icon: ListOrdered, href: '/sequences', color: 'accent' },
   ];
 
   return (
@@ -50,8 +52,8 @@ export function DashboardPage() {
       <main className="flex-1 ml-64 p-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-5xl font-heading font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your ALCHEWAT Pulse system</p>
+          <h1 className="text-5xl font-heading font-bold text-white mb-2">{t('dashboard.title')}</h1>
+          <p className="text-muted-foreground">{t('dashboard.subtitle')}</p>
         </div>
 
         {/* Quick Action */}
@@ -64,8 +66,8 @@ export function DashboardPage() {
               <Play className="w-8 h-8 text-primary" />
             </div>
             <div>
-              <h3 className="text-2xl font-heading font-bold text-white mb-1">Quick Play</h3>
-              <p className="text-muted-foreground">Start a frequency session</p>
+              <h3 className="text-2xl font-heading font-bold text-white mb-1">{t('dashboard.quickPlay')}</h3>
+              <p className="text-muted-foreground">{t('dashboard.quickPlayDesc')}</p>
             </div>
           </div>
           <div className="absolute inset-0 bg-hero-glow opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -95,14 +97,14 @@ export function DashboardPage() {
         {/* Recent Frequencies */}
         <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-heading font-semibold text-white">Recent Frequencies</h2>
+            <h2 className="text-2xl font-heading font-semibold text-white">{t('dashboard.recentFrequencies')}</h2>
             <Link to="/frequencies" className="text-primary hover:text-primary/80 text-sm font-medium">
-              View all →
+              {t('dashboard.viewAll')}
             </Link>
           </div>
 
           {recentFrequencies.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No frequencies yet. Create your first one!</p>
+            <p className="text-muted-foreground text-center py-8">{t('dashboard.noFrequencies')}</p>
           ) : (
             <div className="space-y-3">
               {recentFrequencies.map((freq) => (
@@ -122,7 +124,7 @@ export function DashboardPage() {
                   <div className="text-right">
                     <p className="font-mono font-bold text-accent">{freq.hz} Hz</p>
                     {freq.is_predefined && (
-                      <span className="text-xs text-muted-foreground">Predefined</span>
+                      <span className="text-xs text-muted-foreground">{t('dashboard.predefined')}</span>
                     )}
                   </div>
                 </div>

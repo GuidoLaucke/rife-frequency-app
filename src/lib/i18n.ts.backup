@@ -34,20 +34,6 @@ export function getDefaultTranslations() {
         'nav.admin': 'Admin',
         'nav.logout': 'Abmelden',
         
-        // Dashboard
-        'dashboard.title': 'Dashboard',
-        'dashboard.subtitle': 'Übersicht Ihres ALCHEWAT Pulse Systems',
-        'dashboard.quickPlay': 'Schnellstart',
-        'dashboard.quickPlayDesc': 'Frequenzsitzung starten',
-        'dashboard.stats.frequencies': 'Frequenzen',
-        'dashboard.stats.conditions': 'Krankheiten',
-        'dashboard.stats.persons': 'Personen',
-        'dashboard.stats.sequences': 'Sequenzen',
-        'dashboard.recentFrequencies': 'Letzte Frequenzen',
-        'dashboard.viewAll': 'Alle anzeigen →',
-        'dashboard.noFrequencies': 'Noch keine Frequenzen. Erstellen Sie Ihre erste!',
-        'dashboard.predefined': 'Vordefiniert',
-        
         // Player
         'player.title': 'Frequenz Player',
         'player.subtitle': 'Heilende Frequenzen abspielen',
@@ -97,20 +83,6 @@ export function getDefaultTranslations() {
         'nav.import': 'Import',
         'nav.admin': 'Admin',
         'nav.logout': 'Logout',
-        
-        // Dashboard
-        'dashboard.title': 'Dashboard',
-        'dashboard.subtitle': 'Overview of your ALCHEWAT Pulse system',
-        'dashboard.quickPlay': 'Quick Play',
-        'dashboard.quickPlayDesc': 'Start a frequency session',
-        'dashboard.stats.frequencies': 'Frequencies',
-        'dashboard.stats.conditions': 'Conditions',
-        'dashboard.stats.persons': 'Persons',
-        'dashboard.stats.sequences': 'Sequences',
-        'dashboard.recentFrequencies': 'Recent Frequencies',
-        'dashboard.viewAll': 'View all →',
-        'dashboard.noFrequencies': 'No frequencies yet. Create your first one!',
-        'dashboard.predefined': 'Predefined',
         
         // Player
         'player.title': 'Frequency Player',
@@ -162,20 +134,6 @@ export function getDefaultTranslations() {
         'nav.admin': 'Admin',
         'nav.logout': 'Esci',
         
-        // Dashboard
-        'dashboard.title': 'Cruscotto',
-        'dashboard.subtitle': 'Panoramica del tuo sistema ALCHEWAT Pulse',
-        'dashboard.quickPlay': 'Avvio Rapido',
-        'dashboard.quickPlayDesc': 'Inizia una sessione di frequenza',
-        'dashboard.stats.frequencies': 'Frequenze',
-        'dashboard.stats.conditions': 'Condizioni',
-        'dashboard.stats.persons': 'Persone',
-        'dashboard.stats.sequences': 'Sequenze',
-        'dashboard.recentFrequencies': 'Frequenze Recenti',
-        'dashboard.viewAll': 'Vedi tutto →',
-        'dashboard.noFrequencies': 'Nessuna frequenza ancora. Crea la tua prima!',
-        'dashboard.predefined': 'Predefinito',
-        
         // Player
         'player.title': 'Lettore di Frequenze',
         'player.subtitle': 'Riproduci frequenze curative',
@@ -225,20 +183,6 @@ export function getDefaultTranslations() {
         'nav.import': 'Импорт',
         'nav.admin': 'Админ',
         'nav.logout': 'Выход',
-        
-        // Dashboard
-        'dashboard.title': 'Панель',
-        'dashboard.subtitle': 'Обзор системы ALCHEWAT Pulse',
-        'dashboard.quickPlay': 'Быстрый старт',
-        'dashboard.quickPlayDesc': 'Начать сеанс частот',
-        'dashboard.stats.frequencies': 'Частоты',
-        'dashboard.stats.conditions': 'Состояния',
-        'dashboard.stats.persons': 'Люди',
-        'dashboard.stats.sequences': 'Последовательности',
-        'dashboard.recentFrequencies': 'Недавние частоты',
-        'dashboard.viewAll': 'Посмотреть все →',
-        'dashboard.noFrequencies': 'Пока нет частот. Создайте первую!',
-        'dashboard.predefined': 'Предопределённая',
         
         // Player
         'player.title': 'Плеер частот',
@@ -305,3 +249,5 @@ i18n
 i18n.on('languageChanged', (lng) => {
   localStorage.setItem('alchewat_language', lng);
 });
+
+export default i18n;
