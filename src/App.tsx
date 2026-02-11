@@ -13,6 +13,8 @@ import { PersonsPage } from './pages/PersonsPage';
 import { SequencesPage } from './pages/SequencesPage';
 import { ImportPage } from './pages/ImportPage';
 import { AdminPage } from './pages/AdminPage';
+import { HelpPage } from './pages/HelpPage';
+import { AboutPage } from './pages/AboutPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -103,6 +105,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/help" element={<HelpPage />} />
+      <Route path="/about" element={<AboutPage />} /> 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );

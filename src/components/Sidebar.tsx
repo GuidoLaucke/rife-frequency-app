@@ -9,6 +9,7 @@ import {
   Upload,
   Settings,
   LogOut,
+  HelpCircle,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useRole } from '@/lib/role';
@@ -25,10 +26,11 @@ export function Sidebar() {
     { name: t('nav.dashboard'), href: '/dashboard', icon: LayoutDashboard },
     { name: t('nav.player'), href: '/player', icon: Play },
     { name: t('nav.frequencies'), href: '/frequencies', icon: Waves },
-    { name: t('nav.conditions'), href: '/conditions', icon: FileText },
+    { name: 'Anwendungsgebiete', href: '/conditions', icon: FileText }, // Temporär hardcoded
     { name: t('nav.persons'), href: '/persons', icon: Users },
     { name: t('nav.sequences'), href: '/sequences', icon: ListOrdered },
     { name: t('nav.import'), href: '/import', icon: Upload },
+    { name: 'Hilfe', href: '/help', icon: HelpCircle }, // NEU
   ];
 
   // Add admin link if user is admin
