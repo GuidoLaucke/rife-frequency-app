@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { useRole } from '@/lib/role';
 import { useTranslation } from 'react-i18next';
-import { getDefaultTranslations, saveTranslations } from '@/lib/i18n';
 import { Save, Download, Upload, Plus, Trash2, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -26,11 +25,11 @@ export function AdminPage() {
   }, [isAdmin]);
 
   const loadTranslations = () => {
-    const stored = localStorage.getItem('alchewat_translations');
+    const stored = localStorage.getItem('rife_translations');
     if (stored) {
       setTranslations(JSON.parse(stored));
     } else {
-      setTranslations(getDefaultTranslations());
+      setTranslations({});
     }
   };
 
@@ -47,9 +46,9 @@ export function AdminPage() {
   };
 
   const handleSave = () => {
-    if (saveTranslations(translations)) {
+    if (translations) {
+      localStorage.setItem('rife_translations', JSON.stringify(translations));
       toast.success('Translations saved');
-      // Reload i18n
       i18n.reloadResources();
     } else {
       toast.error('Failed to save translations');
