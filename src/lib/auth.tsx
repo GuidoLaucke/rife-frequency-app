@@ -32,9 +32,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadUser = async (userId: number) => {
-    try {
-      const db = await openDB();
-      const foundUser = await db.get('users', userId);
+  try {
+    if (!userId || isNaN(userId)) {
+      setIsLoading(false);
+      return;
+    }
+    const db = await openDB();
+    const foundUser = await db.get('users', userId);
       if (foundUser) {
         setUser(foundUser);
       }
