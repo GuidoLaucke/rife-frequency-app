@@ -1,260 +1,104 @@
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
-import type { User, Frequency, Condition, Person, Sequence, PersonSequence, FAQ, Category } from '@/types';
+/**
+ * ALCHEWAT Pulse - Database Layer
+ * Version: 3.0 COMPLETE
+ * 
+ * Changelog v3.0:
+ * - Added conditionFrequencies store
+ * - Added conditionSequences store  
+ * - Added bidirectional assignment functions
+ * - Added CONDITIONS CRUD functions
+ * - DB_VERSION = 3
+ */
 
-interface AlchewatDB extends DBSchema {
-  users: {
-    key: string;
-    value: User;
-    indexes: { 'by-email': string };
-  };
-  frequencies: {
-    key: string;
-    value: Frequency;
-    indexes: { 'by-hz': number };
-  };
-  conditions: {
-    key: string;
-    value: Condition;
-    indexes: { 'by-category': string };
-  };
-  persons: {
-    key: string;
-    value: Person;
-    indexes: { 'by-name': string };
-  };
-  sequences: {
-    key: string;
-    value: Sequence;
-    indexes: { 'by-created-by': string };
-  };
-  personSequences: {
-    key: string;
-    value: PersonSequence;
-    indexes: { 'by-person': string; 'by-sequence': string };
-  };
-  faqs: {
-    key: string;
-    value: FAQ;
-    indexes: { 'by-order': number };
-  };
-  categories: {
-    key: string;
-    value: Category;
-    indexes: { 'by-name': string };
-  };
-}
+import { openDB, IDBPDatabase } from 'idb';
 
 const DB_NAME = 'alchewat-pulse-db';
-const DB_VERSION = 3; // Erhöht von 1 auf 2 für neue Features
+const DB_VERSION = 3;
 
-let dbInstance: IDBPDatabase<AlchewatDB> | null = null;
+// ========================================
+// INTERFACES
+// ========================================
 
-export async function getDB(): Promise<IDBPDatabase<AlchewatDB>> {
-  if (dbInstance) return dbInstance;
-
-  dbInstance = await openDB<AlchewatDB>(DB_NAME, DB_VERSION, {
-    async upgrade(db, oldVersion, newVersion, transaction) {
-      console.log(`🔄 Database upgrade: v${oldVersion} → v${newVersion}`);
-
-      // Initial setup (Version 0 → 1)
-      if (oldVersion < 1) {
-        // Users store
-        if (!db.objectStoreNames.contains('users')) {
-          const userStore = db.createObjectStore('users', { keyPath: 'id' });
-          userStore.createIndex('by-email', 'email', { unique: true });
-        }
-
-        // Frequencies store
-        if (!db.objectStoreNames.contains('frequencies')) {
-          const freqStore = db.createObjectStore('frequencies', { keyPath: 'id' });
-          freqStore.createIndex('by-hz', 'hz');
-        }
-
-        // Conditions store
-        if (!db.objectStoreNames.contains('conditions')) {
-          const condStore = db.createObjectStore('conditions', { keyPath: 'id' });
-          condStore.createIndex('by-category', 'category');
-        }
-
-        // Persons store
-        if (!db.objectStoreNames.contains('persons')) {
-          const personStore = db.createObjectStore('persons', { keyPath: 'id' });
-          personStore.createIndex('by-name', 'name');
-        }
-
-        // Sequences store
-        if (!db.objectStoreNames.contains('sequences')) {
-          const seqStore = db.createObjectStore('sequences', { keyPath: 'id' });
-          seqStore.createIndex('by-created-by', 'created_by');
-        }
-
-        // PersonSequences store
-        if (!db.objectStoreNames.contains('personSequences')) {
-          const psStore = db.createObjectStore('personSequences', { keyPath: 'id' });
-          psStore.createIndex('by-person', 'person_id');
-          psStore.createIndex('by-sequence', 'sequence_id');
-        }
-      }
-
-      // Version 1 → 2: Add FAQs, Categories, Tags to Conditions
-      if (oldVersion < 2) {
-        console.log('📦 Migrating to v2: Adding FAQs, Categories, Tags...');
-
-        // Create FAQs store
-        if (!db.objectStoreNames.contains('faqs')) {
-          const faqStore = db.createObjectStore('faqs', { keyPath: 'id' });
-          faqStore.createIndex('by-order', 'order');
-        }
-
-        // Create Categories store
-        if (!db.objectStoreNames.contains('categories')) {
-          const catStore = db.createObjectStore('categories', { keyPath: 'id' });
-          catStore.createIndex('by-name', 'name_de');
-        }
-
-        // Migrate Conditions: Add tags field
-        const condStore = transaction.objectStore('conditions');
-        const allConditions = await condStore.getAll();
-        
-        for (const condition of allConditions) {
-          if (!condition.tags) {
-            condition.tags = [];
-            await condStore.put(condition);
-          }
-        }
-
-        // Migrate Persons: Add assigned_sequences if missing
-        const personStore = transaction.objectStore('persons');
-        const allPersons = await personStore.getAll();
-        
-        for (const person of allPersons) {
-          if (!person.assigned_sequences) {
-            person.assigned_sequences = [];
-            await personStore.put(person);
-          }
-        }
-
-        // Migrate Sequences: Add assigned_persons if missing
-        const seqStore = transaction.objectStore('sequences');
-        const allSequences = await seqStore.getAll();
-        
-        for (const sequence of allSequences) {
-          if (!sequence.assigned_persons) {
-            sequence.assigned_persons = [];
-            await seqStore.put(sequence);
-          }
-        }
-
-        console.log('✅ Migration to v2 complete!');
-      }
-    },
-    async blocked() {
-      console.warn('⚠️ Database upgrade blocked - close other tabs');
-    },
-    async blocking() {
-      console.warn('⚠️ This tab is blocking a database upgrade');
-      dbInstance?.close();
-      dbInstance = null;
-    },
-  });
-
-  // Seed default data
-  await seedDefaultData(dbInstance);
-
-  return dbInstance;
+export interface User {
+  id?: number;
+  email: string;
+  password: string;
+  name: string;
+  createdAt: Date;
 }
 
-async function seedDefaultData(db: IDBPDatabase<AlchewatDB>) {
-  // Seed default categories
-  const categories = await db.getAll('categories');
-  if (categories.length === 0) {
-    const defaultCategories: Category[] = [
-      {
-        id: 'cat-physical',
-        name_de: 'Körperliche Gesundheit',
-        name_en: 'Physical Health',
-        name_it: 'Salute Fisica',
-        name_ru: 'Физическое здоровье',
-        is_default: true,
-        created_at: new Date(),
-      },
-      {
-        id: 'cat-mental',
-        name_de: 'Mentale Gesundheit',
-        name_en: 'Mental Health',
-        name_it: 'Salute Mentale',
-        name_ru: 'Психическое здоровье',
-        is_default: true,
-        created_at: new Date(),
-      },
-      {
-        id: 'cat-spiritual',
-        name_de: 'Spirituell',
-        name_en: 'Spiritual',
-        name_it: 'Spirituale',
-        name_ru: 'Духовное',
-        is_default: true,
-        created_at: new Date(),
-      },
-    ];
-
-    for (const cat of defaultCategories) {
-      await db.add('categories', cat);
-    }
-    console.log('✅ Default categories seeded');
-  }
-
-  // Seed predefined frequencies (if empty)
-  const frequencies = await db.getAll('frequencies');
-  if (frequencies.length === 0) {
-    const predefinedFreqs: Frequency[] = [
-      { id: crypto.randomUUID(), hz: 396, name: 'Liberation', description: 'Liberating Guilt and Fear', conditions: [], is_predefined: true, color: '#FF0000', created_at: new Date() },
-      { id: crypto.randomUUID(), hz: 417, name: 'Change', description: 'Undoing Situations and Facilitating Change', conditions: [], is_predefined: true, color: '#FF8000', created_at: new Date() },
-      { id: crypto.randomUUID(), hz: 528, name: 'Healing', description: 'Transformation and Miracles (DNA Repair)', conditions: [], is_predefined: true, color: '#FFFF00', created_at: new Date() },
-      { id: crypto.randomUUID(), hz: 639, name: 'Relationships', description: 'Connecting/Relationships', conditions: [], is_predefined: true, color: '#00FF00', created_at: new Date() },
-      { id: crypto.randomUUID(), hz: 741, name: 'Expression', description: 'Awakening Intuition', conditions: [], is_predefined: true, color: '#0000FF', created_at: new Date() },
-      { id: crypto.randomUUID(), hz: 852, name: 'Spiritual', description: 'Returning to Spiritual Order', conditions: [], is_predefined: true, color: '#4B0082', created_at: new Date() },
-      { id: crypto.randomUUID(), hz: 963, name: 'Awakening', description: 'Awakening Perfect State', conditions: [], is_predefined: true, color: '#9400D3', created_at: new Date() },
-    ];
-
-    for (const freq of predefinedFreqs) {
-      await db.add('frequencies', freq);
-    }
-    console.log('✅ Predefined frequencies seeded');
-  }
+export interface Frequency {
+  id?: number;
+  name: string;
+  hz: number;
+  description?: string;
+  color: string;
+  isPredefined: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// Database API
-export const db = {
-  async getAll<T extends keyof AlchewatDB>(storeName: T): Promise<AlchewatDB[T]['value'][]> {
-    const db = await getDB();
-    return db.getAll(storeName);
-  },
+export interface Condition {
+  id?: number;
+  name: string;
+  description?: string;
+  categoryId: number;
+  tags?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-  async getById<T extends keyof AlchewatDB>(storeName: T, id: string): Promise<AlchewatDB[T]['value'] | undefined> {
-    const db = await getDB();
-    return db.get(storeName, id);
-  },
+export interface Category {
+  id?: number;
+  key: string;
+  nameDE: string;
+  nameEN: string;
+  createdAt: Date;
+}
 
-  async add<T extends keyof AlchewatDB>(storeName: T, item: AlchewatDB[T]['value']): Promise<string> {
-    const db = await getDB();
-    return db.add(storeName, item);
-  },
+export interface Person {
+  id?: number;
+  name: string;
+  email?: string;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-  async update<T extends keyof AlchewatDB>(storeName: T, item: AlchewatDB[T]['value']): Promise<string> {
-    const db = await getDB();
-    return db.put(storeName, item);
-  },
+export interface Sequence {
+  id?: number;
+  name: string;
+  description?: string;
+  frequencies: {
+    frequencyId: number;
+    duration: number;
+  }[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-  async delete<T extends keyof AlchewatDB>(storeName: T, id: string): Promise<void> {
-    const db = await getDB();
-    return db.delete(storeName, id);
-  },
-};
+export interface PersonSequence {
+  id?: number;
+  personId: number;
+  sequenceId: number;
+  createdAt: Date;
+}
 
-// Add these to your existing db.ts file
+export interface PersonFrequency {
+  id?: number;
+  personId: number;
+  frequencyId: number;
+  createdAt: Date;
+}
 
-// NEW INTERFACES (add to existing interfaces section)
+export interface FAQ {
+  id?: number;
+  question: string;
+  answer: string;
+  order: number;
+  createdAt: Date;
+}
+
 export interface ConditionFrequency {
   id?: number;
   conditionId: number;
@@ -269,45 +113,420 @@ export interface ConditionSequence {
   createdAt: Date;
 }
 
-// UPDATE DB_VERSION (change existing)
-
-// UPDATE openDB function - add new stores to the upgrade section:
-/*
-In your existing openDB() function, in the if (db.version < 3) block, add:
-
-if (!db.objectStoreNames.contains('conditionFrequencies')) {
-  const condFreqStore = db.createObjectStore('conditionFrequencies', { 
-    keyPath: 'id', 
-    autoIncrement: true 
-  });
-  condFreqStore.createIndex('conditionId', 'conditionId', { unique: false });
-  condFreqStore.createIndex('frequencyId', 'frequencyId', { unique: false });
+interface AlchewatDB {
+  users: User;
+  frequencies: Frequency;
+  conditions: Condition;
+  categories: Category;
+  persons: Person;
+  sequences: Sequence;
+  personSequences: PersonSequence;
+  personFrequencies: PersonFrequency;
+  faqs: FAQ;
+  conditionFrequencies: ConditionFrequency;
+  conditionSequences: ConditionSequence;
 }
 
-if (!db.objectStoreNames.contains('conditionSequences')) {
-  const condSeqStore = db.createObjectStore('conditionSequences', { 
-    keyPath: 'id', 
-    autoIncrement: true 
+// ========================================
+// DATABASE INITIALIZATION
+// ========================================
+
+let dbInstance: IDBPDatabase<AlchewatDB> | null = null;
+
+export async function openDB(): Promise<IDBPDatabase<AlchewatDB>> {
+  if (dbInstance) return dbInstance;
+
+  dbInstance = await openDB<AlchewatDB>(DB_NAME, DB_VERSION, {
+    upgrade(db, oldVersion) {
+      console.log(`Upgrading database from version ${oldVersion} to ${DB_VERSION}`);
+
+      // Version 1: Initial stores
+      if (oldVersion < 1) {
+        if (!db.objectStoreNames.contains('users')) {
+          db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('frequencies')) {
+          db.createObjectStore('frequencies', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('conditions')) {
+          db.createObjectStore('conditions', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('persons')) {
+          db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('sequences')) {
+          db.createObjectStore('sequences', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('personSequences')) {
+          const psStore = db.createObjectStore('personSequences', { 
+            keyPath: 'id', 
+            autoIncrement: true 
+          });
+          psStore.createIndex('personId', 'personId', { unique: false });
+          psStore.createIndex('sequenceId', 'sequenceId', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('personFrequencies')) {
+          const pfStore = db.createObjectStore('personFrequencies', { 
+            keyPath: 'id', 
+            autoIncrement: true 
+          });
+          pfStore.createIndex('personId', 'personId', { unique: false });
+          pfStore.createIndex('frequencyId', 'frequencyId', { unique: false });
+        }
+      }
+
+      // Version 2: Categories and FAQs
+      if (oldVersion < 2) {
+        if (!db.objectStoreNames.contains('categories')) {
+          db.createObjectStore('categories', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('faqs')) {
+          db.createObjectStore('faqs', { keyPath: 'id', autoIncrement: true });
+        }
+      }
+
+      // Version 3: Condition relationships
+      if (oldVersion < 3) {
+        if (!db.objectStoreNames.contains('conditionFrequencies')) {
+          const cfStore = db.createObjectStore('conditionFrequencies', { 
+            keyPath: 'id', 
+            autoIncrement: true 
+          });
+          cfStore.createIndex('conditionId', 'conditionId', { unique: false });
+          cfStore.createIndex('frequencyId', 'frequencyId', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('conditionSequences')) {
+          const csStore = db.createObjectStore('conditionSequences', { 
+            keyPath: 'id', 
+            autoIncrement: true 
+          });
+          csStore.createIndex('conditionId', 'conditionId', { unique: false });
+          csStore.createIndex('sequenceId', 'sequenceId', { unique: false });
+        }
+      }
+    },
   });
-  condSeqStore.createIndex('conditionId', 'conditionId', { unique: false });
-  condSeqStore.createIndex('sequenceId', 'sequenceId', { unique: false });
+
+  // Initialize default data
+  await initializeDefaultData();
+
+  return dbInstance;
 }
-*/
 
-// NEW FUNCTIONS (add at the end of your db.ts file)
+async function initializeDefaultData() {
+  const db = dbInstance!;
+
+  // Initialize categories
+  const categoryStore = db.transaction('categories', 'readwrite').store;
+  const categoryCount = await categoryStore.count();
+  
+  if (categoryCount === 0) {
+    const defaultCategories = [
+      { key: 'physical', nameDE: 'Körperliche Gesundheit', nameEN: 'Physical Health', createdAt: new Date() },
+      { key: 'mental', nameDE: 'Mentale Gesundheit', nameEN: 'Mental Health', createdAt: new Date() },
+      { key: 'spiritual', nameDE: 'Spirituell', nameEN: 'Spiritual', createdAt: new Date() },
+    ];
+    for (const category of defaultCategories) {
+      await categoryStore.add(category);
+    }
+  }
+
+  // Initialize predefined frequencies
+  const freqStore = db.transaction('frequencies', 'readwrite').store;
+  const freqCount = await freqStore.count();
+  
+  if (freqCount === 0) {
+    const predefinedFrequencies: Frequency[] = [
+      { name: 'Streptococcus', hz: 880, description: 'For strep infections', color: '#8B5CF6', isPredefined: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: 'General Pathogen Alt', hz: 787, description: 'Alternative pathogen frequency', color: '#EC4899', isPredefined: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: 'General Pathogen', hz: 727, description: 'Classic Rife frequency', color: '#F59E0B', isPredefined: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Candida', hz: 464, description: 'Antifungal frequency', color: '#10B981', isPredefined: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: 'General Pain Relief', hz: 20, description: 'Low frequency for general pain', color: '#3B82F6', isPredefined: true, createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Cell Regeneration', hz: 10000, description: 'Promotes healing', color: '#8B5CF6', isPredefined: true, createdAt: new Date(), updatedAt: new Date() },
+    ];
+    for (const freq of predefinedFrequencies) {
+      await freqStore.add(freq);
+    }
+  }
+}
 
 // ========================================
-// CONDITION FREQUENCIES
+// USER FUNCTIONS
 // ========================================
 
-export async function assignFrequencyToCondition(
-  conditionId: number,
-  frequencyId: number
-): Promise<void> {
+export async function createUser(user: Omit<User, 'id'>): Promise<number> {
+  const db = await openDB();
+  return db.add('users', user);
+}
+
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  const db = await openDB();
+  const users = await db.getAll('users');
+  return users.find(u => u.email === email);
+}
+
+// ========================================
+// FREQUENCY FUNCTIONS
+// ========================================
+
+export async function getFrequencies(): Promise<Frequency[]> {
+  const db = await openDB();
+  return db.getAll('frequencies');
+}
+
+export async function getFrequency(id: number): Promise<Frequency | undefined> {
+  const db = await openDB();
+  return db.get('frequencies', id);
+}
+
+export async function createFrequency(frequency: Frequency): Promise<number> {
+  const db = await openDB();
+  return db.add('frequencies', frequency);
+}
+
+export async function updateFrequency(id: number, frequency: Partial<Frequency>): Promise<void> {
+  const db = await openDB();
+  const existing = await db.get('frequencies', id);
+  if (existing) {
+    await db.put('frequencies', { ...existing, ...frequency, id });
+  }
+}
+
+export async function deleteFrequency(id: number): Promise<void> {
+  const db = await openDB();
+  await db.delete('frequencies', id);
+}
+
+// ========================================
+// CONDITIONS CRUD
+// ========================================
+
+export async function getConditions(): Promise<Condition[]> {
+  const db = await openDB();
+  return db.getAll('conditions');
+}
+
+export async function createCondition(condition: Condition): Promise<number> {
+  const db = await openDB();
+  return db.add('conditions', condition);
+}
+
+export async function updateCondition(id: number, condition: Partial<Condition>): Promise<void> {
+  const db = await openDB();
+  const existing = await db.get('conditions', id);
+  if (existing) {
+    await db.put('conditions', { ...existing, ...condition, id });
+  }
+}
+
+export async function deleteCondition(id: number): Promise<void> {
+  const db = await openDB();
+  await db.delete('conditions', id);
+}
+
+// ========================================
+// CATEGORY FUNCTIONS
+// ========================================
+
+export async function getCategories(): Promise<Category[]> {
+  const db = await openDB();
+  return db.getAll('categories');
+}
+
+// ========================================
+// PERSON FUNCTIONS
+// ========================================
+
+export async function getPersons(): Promise<Person[]> {
+  const db = await openDB();
+  return db.getAll('persons');
+}
+
+export async function createPerson(person: Person): Promise<number> {
+  const db = await openDB();
+  return db.add('persons', person);
+}
+
+export async function updatePerson(id: number, person: Partial<Person>): Promise<void> {
+  const db = await openDB();
+  const existing = await db.get('persons', id);
+  if (existing) {
+    await db.put('persons', { ...existing, ...person, id });
+  }
+}
+
+export async function deletePerson(id: number): Promise<void> {
+  const db = await openDB();
+  await db.delete('persons', id);
+}
+
+// ========================================
+// SEQUENCE FUNCTIONS
+// ========================================
+
+export async function getSequences(): Promise<Sequence[]> {
+  const db = await openDB();
+  return db.getAll('sequences');
+}
+
+export async function createSequence(sequence: Sequence): Promise<number> {
+  const db = await openDB();
+  return db.add('sequences', sequence);
+}
+
+export async function updateSequence(id: number, sequence: Partial<Sequence>): Promise<void> {
+  const db = await openDB();
+  const existing = await db.get('sequences', id);
+  if (existing) {
+    await db.put('sequences', { ...existing, ...sequence, id });
+  }
+}
+
+export async function deleteSequence(id: number): Promise<void> {
+  const db = await openDB();
+  await db.delete('sequences', id);
+}
+
+// ========================================
+// PERSON-SEQUENCE RELATIONSHIPS
+// ========================================
+
+export async function assignSequenceToPerson(personId: number, sequenceId: number): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('personSequences', 'readwrite');
+  
+  const index = tx.store.index('personId');
+  const existing = await index.getAll(personId);
+  const alreadyAssigned = existing.some((ps: PersonSequence) => ps.sequenceId === sequenceId);
+  
+  if (!alreadyAssigned) {
+    await tx.store.add({
+      personId,
+      sequenceId,
+      createdAt: new Date(),
+    });
+  }
+  
+  await tx.done;
+}
+
+export async function removeSequenceFromPerson(personId: number, sequenceId: number): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('personSequences', 'readwrite');
+  
+  const index = tx.store.index('personId');
+  const records = await index.getAll(personId);
+  
+  for (const record of records) {
+    if (record.sequenceId === sequenceId) {
+      await tx.store.delete(record.id!);
+    }
+  }
+  
+  await tx.done;
+}
+
+export async function getSequencesForPerson(personId: number): Promise<Sequence[]> {
+  const db = await openDB();
+  const tx = db.transaction(['personSequences', 'sequences'], 'readonly');
+  
+  const index = tx.objectStore('personSequences').index('personId');
+  const assignments = await index.getAll(personId);
+  
+  const sequences: Sequence[] = [];
+  for (const assignment of assignments) {
+    const seq = await tx.objectStore('sequences').get(assignment.sequenceId);
+    if (seq) {
+      sequences.push(seq);
+    }
+  }
+  
+  return sequences;
+}
+
+export async function getPersonsForSequence(sequenceId: number): Promise<Person[]> {
+  const db = await openDB();
+  const tx = db.transaction(['personSequences', 'persons'], 'readonly');
+  
+  const index = tx.objectStore('personSequences').index('sequenceId');
+  const assignments = await index.getAll(sequenceId);
+  
+  const persons: Person[] = [];
+  for (const assignment of assignments) {
+    const person = await tx.objectStore('persons').get(assignment.personId);
+    if (person) {
+      persons.push(person);
+    }
+  }
+  
+  return persons;
+}
+
+// ========================================
+// PERSON-FREQUENCY RELATIONSHIPS
+// ========================================
+
+export async function assignFrequencyToPerson(personId: number, frequencyId: number): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('personFrequencies', 'readwrite');
+  
+  const index = tx.store.index('personId');
+  const existing = await index.getAll(personId);
+  const alreadyAssigned = existing.some((pf: PersonFrequency) => pf.frequencyId === frequencyId);
+  
+  if (!alreadyAssigned) {
+    await tx.store.add({
+      personId,
+      frequencyId,
+      createdAt: new Date(),
+    });
+  }
+  
+  await tx.done;
+}
+
+export async function removeFrequencyFromPerson(personId: number, frequencyId: number): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('personFrequencies', 'readwrite');
+  
+  const index = tx.store.index('personId');
+  const records = await index.getAll(personId);
+  
+  for (const record of records) {
+    if (record.frequencyId === frequencyId) {
+      await tx.store.delete(record.id!);
+    }
+  }
+  
+  await tx.done;
+}
+
+export async function getFrequenciesForPerson(personId: number): Promise<Frequency[]> {
+  const db = await openDB();
+  const tx = db.transaction(['personFrequencies', 'frequencies'], 'readonly');
+  
+  const index = tx.objectStore('personFrequencies').index('personId');
+  const assignments = await index.getAll(personId);
+  
+  const frequencies: Frequency[] = [];
+  for (const assignment of assignments) {
+    const freq = await tx.objectStore('frequencies').get(assignment.frequencyId);
+    if (freq) {
+      frequencies.push(freq);
+    }
+  }
+  
+  return frequencies;
+}
+
+// ========================================
+// CONDITION-FREQUENCY RELATIONSHIPS
+// ========================================
+
+export async function assignFrequencyToCondition(conditionId: number, frequencyId: number): Promise<void> {
   const db = await openDB();
   const tx = db.transaction('conditionFrequencies', 'readwrite');
   
-  // Check if already assigned
   const index = tx.store.index('conditionId');
   const existing = await index.getAll(conditionId);
   const alreadyAssigned = existing.some((cf: ConditionFrequency) => cf.frequencyId === frequencyId);
@@ -323,10 +542,7 @@ export async function assignFrequencyToCondition(
   await tx.done;
 }
 
-export async function removeFrequencyFromCondition(
-  conditionId: number,
-  frequencyId: number
-): Promise<void> {
+export async function removeFrequencyFromCondition(conditionId: number, frequencyId: number): Promise<void> {
   const db = await openDB();
   const tx = db.transaction('conditionFrequencies', 'readwrite');
   
@@ -379,13 +595,10 @@ export async function getConditionsForFrequency(frequencyId: number): Promise<Co
 }
 
 // ========================================
-// CONDITION SEQUENCES
+// CONDITION-SEQUENCE RELATIONSHIPS
 // ========================================
 
-export async function assignSequenceToCondition(
-  conditionId: number,
-  sequenceId: number
-): Promise<void> {
+export async function assignSequenceToCondition(conditionId: number, sequenceId: number): Promise<void> {
   const db = await openDB();
   const tx = db.transaction('conditionSequences', 'readwrite');
   
@@ -404,10 +617,7 @@ export async function assignSequenceToCondition(
   await tx.done;
 }
 
-export async function removeSequenceFromCondition(
-  conditionId: number,
-  sequenceId: number
-): Promise<void> {
+export async function removeSequenceFromCondition(conditionId: number, sequenceId: number): Promise<void> {
   const db = await openDB();
   const tx = db.transaction('conditionSequences', 'readwrite');
   
@@ -458,54 +668,31 @@ export async function getConditionsForSequence(sequenceId: number): Promise<Cond
   
   return conditions;
 }
+
 // ========================================
-// CONDITIONS CRUD
+// FAQ FUNCTIONS
 // ========================================
 
-export async function getConditions(): Promise<Condition[]> {
+export async function getFAQs(): Promise<FAQ[]> {
   const db = await openDB();
-  return db.getAll('conditions');
+  const faqs = await db.getAll('faqs');
+  return faqs.sort((a, b) => a.order - b.order);
 }
 
-export async function createCondition(condition: Condition): Promise<number> {
+export async function createFAQ(faq: FAQ): Promise<number> {
   const db = await openDB();
-  return db.add('conditions', condition);
+  return db.add('faqs', faq);
 }
 
-export async function updateCondition(id: number, condition: Partial<Condition>): Promise<void> {
+export async function updateFAQ(id: number, faq: Partial<FAQ>): Promise<void> {
   const db = await openDB();
-  const existing = await db.get('conditions', id);
+  const existing = await db.get('faqs', id);
   if (existing) {
-    await db.put('conditions', { ...existing, ...condition, id });
+    await db.put('faqs', { ...existing, ...faq, id });
   }
 }
 
-export async function deleteCondition(id: number): Promise<void> {
+export async function deleteFAQ(id: number): Promise<void> {
   const db = await openDB();
-  await db.delete('conditions', id);
-}// ========================================
-// CONDITIONS CRUD
-// ========================================
-
-export async function getConditions(): Promise<Condition[]> {
-  const db = await openDB();
-  return db.getAll('conditions');
-}
-
-export async function createCondition(condition: Condition): Promise<number> {
-  const db = await openDB();
-  return db.add('conditions', condition);
-}
-
-export async function updateCondition(id: number, condition: Partial<Condition>): Promise<void> {
-  const db = await openDB();
-  const existing = await db.get('conditions', id);
-  if (existing) {
-    await db.put('conditions', { ...existing, ...condition, id });
-  }
-}
-
-export async function deleteCondition(id: number): Promise<void> {
-  const db = await openDB();
-  await db.delete('conditions', id);
+  await db.delete('faqs', id);
 }
