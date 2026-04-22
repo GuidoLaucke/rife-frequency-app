@@ -270,7 +270,6 @@ export interface ConditionSequence {
 }
 
 // UPDATE DB_VERSION (change existing)
-const DB_VERSION = 3; // <- Change from 2 to 3
 
 // UPDATE openDB function - add new stores to the upgrade section:
 /*
