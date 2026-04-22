@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
-import { db } from '@/lib/db';
+import { createFrequency, createCondition, createSequence } from '@/lib/db';
 import { Upload, Download, FileJson, FileSpreadsheet, Check, X, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth';
-import type { Frequency, Condition, Sequence } from '@/types';
 
 type ImportType = 'frequencies' | 'conditions' | 'sequences';
 

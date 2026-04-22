@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
-import { db } from '@/lib/db';
+import { getSequences, createSequence, updateSequence, deleteSequence, getFrequencies, getPersons, assignSequenceToPerson, removeSequenceFromPerson, getPersonsForSequence } from '@/lib/db';
 import { Plus, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth';
-import type { Sequence, Frequency, SequenceFrequency, Person } from '@/types';
 
 export function SequencesPage() {
   const { user } = useAuth();

@@ -3,7 +3,6 @@ import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { WaveformVisualizer } from './WaveformVisualizer';
 import { ColorVisualizer } from './ColorVisualizer';
 import { audioService } from '@/lib/audio';
-import type { WaveformType, SequenceFrequency } from '@/types';
 
 interface FrequencyPlayerProps {
   sequence?: SequenceFrequency[];

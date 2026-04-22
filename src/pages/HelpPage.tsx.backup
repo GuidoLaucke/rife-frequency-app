@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { useTranslation } from 'react-i18next';
-import { getFAQs, type FAQ } from '@/lib/db';
+import { db } from '@/lib/db';
 import { ChevronDown, ChevronUp, BookOpen, HelpCircle, Rocket } from 'lucide-react';
+import type { FAQ } from '@/types';
 
 export function HelpPage() {
   const { t, i18n } = useTranslation();

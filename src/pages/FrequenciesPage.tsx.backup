@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
-import { getFrequencies, createFrequency, updateFrequency, deleteFrequency, type Frequency } from '@/lib/db';
+import { db } from '@/lib/db';
 import { Plus, Trash2, Edit } from 'lucide-react';
 import { toast } from 'sonner';
+import type { Frequency } from '@/types';
 
 export function FrequenciesPage() {
   const [frequencies, setFrequencies] = useState<Frequency[]>([]);
@@ -19,7 +20,7 @@ export function FrequenciesPage() {
   useEffect(() => { loadFrequencies(); }, []);
 
   const loadFrequencies = async () => {
-    const data = await getFrequencies();
+    const data = await db.getAll('frequencies');
     setFrequencies(data);
   };
 
@@ -43,7 +44,7 @@ export function FrequenciesPage() {
       await db.update('frequencies', freqData);
       toast.success('Frequenz aktualisiert');
     } else {
-      await createFrequency( freqData);
+      await db.add('frequencies', freqData);
       toast.success('Frequenz erstellt');
     }
 
@@ -73,7 +74,7 @@ export function FrequenciesPage() {
       return;
     }
     if (confirm('Diese Frequenz löschen?')) {
-      await deleteFrequency(id);
+      await db.delete('frequencies', id);
       toast.success('Frequenz gelöscht');
       loadFrequencies();
     }

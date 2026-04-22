@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { FrequencyPlayer } from '@/components/FrequencyPlayer';
-import { getFrequencies, getSequences, getPersons, getFrequenciesForPerson, getSequencesForPerson, type Frequency, type Sequence, type Person } from '@/lib/db';
+import { db } from '@/lib/db';
+import type { Frequency, Sequence, Person } from '@/types';
 
 export function PlayerPage() {
   const [mode, setMode] = useState<'single' | 'sequence'>('single');
@@ -18,9 +19,9 @@ export function PlayerPage() {
 
   const loadData = async () => {
     const [freqs, seqs, pers] = await Promise.all([
-      getFrequencies(),
-      getSequences(),
-      getPersons(),
+      db.getAll('frequencies'),
+      db.getAll('sequences'),
+      db.getAll('persons'),
     ]);
     setFrequencies(freqs);
     setSequences(seqs);

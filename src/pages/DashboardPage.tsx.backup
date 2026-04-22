@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
-import { getFrequencies, getConditions, getPersons, getSequences } from '@/lib/db';
+import { db } from '@/lib/db';
 import { Waves, FileText, Users, ListOrdered, Play } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { Frequency, Condition, Person, Sequence } from '@/types';
 
 export function DashboardPage() {
   const { t } = useTranslation();

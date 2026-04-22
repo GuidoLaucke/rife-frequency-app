@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getFrequencies, type Frequency } from '@/lib/db';
+import { db } from '@/lib/db';
+import type { Frequency } from '@/types';
 
 interface ColorVisualizerProps {
   frequency: number | null;
@@ -31,7 +32,7 @@ export function ColorVisualizer({ frequency, isPlaying, className = '' }: ColorV
   }, []);
 
   const loadCustomColors = async () => {
-    const frequencies = await getFrequencies();
+    const frequencies = await db.getAll('frequencies');
     const colorMap: Record<number, string> = {};
     frequencies.forEach((freq: Frequency) => {
       if (freq.color) {

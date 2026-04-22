@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
-import { db } from '@/lib/db';
+import { getPersons, createPerson, updatePerson, deletePerson, getSequences, getFrequencies, assignSequenceToPerson, removeSequenceFromPerson, assignFrequencyToPerson, removeFrequencyFromPerson, getSequencesForPerson, getFrequenciesForPerson } from '@/lib/db';
 import { Plus, Trash2, Edit, ListOrdered } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth';
-import type { Person, Condition, Frequency, Sequence, SequenceFrequency } from '@/types';
 
 export function PersonsPage() {
   const { user } = useAuth();

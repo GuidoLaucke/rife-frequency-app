@@ -1,6 +1,11 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { openDB } from '@/lib/db';
-import type { User } from '@/types';
+import { getUserByEmail, createUser, openDB } from '@/lib/db';
+
+interface User {
+  id?: number;
+  email: string;
+  name: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -20,26 +25,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check for stored session
     const storedUserId = localStorage.getItem('userId');
     if (storedUserId) {
-      db.getById('users', storedUserId).then(foundUser => {
-        if (foundUser) setUser(foundUser);
-        setIsLoading(false);
-      });
+      loadUser(Number(storedUserId));
     } else {
       setIsLoading(false);
     }
   }, []);
 
+  const loadUser = async (userId: number) => {
+    try {
+      const db = await openDB();
+      const foundUser = await db.get('users', userId);
+      if (foundUser) {
+        setUser(foundUser);
+      }
+    } catch (error) {
+      console.error('Error loading user:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const users = await db.getAll('users');
-      const foundUser = users.find(u => u.email === email);
+      const foundUser = await getUserByEmail(email);
       
-      if (!foundUser) return false;
-      
-      // Simple password check (in production, use proper hashing)
-      if (foundUser.password_hash === password) {
+      if (foundUser && foundUser.password === password) {
         setUser(foundUser);
-        localStorage.setItem('userId', foundUser.id);
+        localStorage.setItem('userId', String(foundUser.id));
         return true;
       }
       return false;
@@ -51,22 +63,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (email: string, password: string, name: string): Promise<boolean> => {
     try {
-      const users = await db.getAll('users');
-      if (users.some(u => u.email === email)) {
-        return false; // Email already exists
+      const existingUser = await getUserByEmail(email);
+      if (existingUser) {
+        return false; // User already exists
       }
 
-      const newUser: User = {
-        id: crypto.randomUUID(),
+      const userId = await createUser({
         email,
-        password_hash: password, // In production, hash this!
+        password,
         name,
-        created_at: new Date(),
-      };
+        createdAt: new Date(),
+      });
 
-      await db.add('users', newUser);
+      const newUser = { id: userId, email, name };
       setUser(newUser);
-      localStorage.setItem('userId', newUser.id);
+      localStorage.setItem('userId', String(userId));
       return true;
     } catch (error) {
       console.error('Registration error:', error);
