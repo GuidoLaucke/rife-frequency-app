@@ -11,7 +11,7 @@
  */
 
 import { openDB as idbOpenDB, IDBPDatabase } from 'idb';
-
+const DB_NAME = 'alchewat-pulse-db';
 const DB_VERSION = 3;
 
 // ========================================
