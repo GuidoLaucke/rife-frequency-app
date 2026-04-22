@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { db } from '@/lib/db';
+import { openDB } from '@/lib/db';
 import type { User } from '@/types';
 
 interface AuthContextType {
