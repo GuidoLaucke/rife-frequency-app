@@ -10,9 +10,8 @@
  * - DB_VERSION = 3
  */
 
-import { openDB as IDBPDatabase, IDBPDatabase } from 'idb';
+import { openDB as idbOpenDB, IDBPDatabase } from 'idb';
 
-const DB_NAME = 'alchewat-pulse-db';
 const DB_VERSION = 3;
 
 // ========================================
