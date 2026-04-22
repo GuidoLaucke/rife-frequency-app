@@ -136,7 +136,7 @@ let dbInstance: IDBPDatabase<AlchewatDB> | null = null;
 export async function openDB(): Promise<IDBPDatabase<AlchewatDB>> {
   if (dbInstance) return dbInstance;
 
-  dbInstance = await idbO:wqpenDB<AlchewatDB>(DB_NAME, DB_VERSION, {
+  dbInstance = await idbOpenDB<AlchewatDB>(DB_NAME, DB_VERSION, {
     upgrade(db, oldVersion) {
       console.log(`Upgrading database from version ${oldVersion} to ${DB_VERSION}`);
 
@@ -694,4 +694,5 @@ export async function updateFAQ(id: number, faq: Partial<FAQ>): Promise<void> {
 
 export async function deleteFAQ(id: number): Promise<void> {
   const db = await openDB();
-  await db.delete('faqs', id);:wq}
+  await db.delete('faqs', id);
+}
