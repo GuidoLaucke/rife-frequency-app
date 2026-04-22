@@ -19,7 +19,7 @@ import {
   type Frequency,
   type Sequence
 } from '@/lib/db';
-import { Plus, Edit, Trash2, X, Radio, List } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Radio, List, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
