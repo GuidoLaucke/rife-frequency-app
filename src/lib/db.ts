@@ -458,4 +458,54 @@ export async function getConditionsForSequence(sequenceId: number): Promise<Cond
   
   return conditions;
 }
+// ========================================
+// CONDITIONS CRUD
+// ========================================
 
+export async function getConditions(): Promise<Condition[]> {
+  const db = await openDB();
+  return db.getAll('conditions');
+}
+
+export async function createCondition(condition: Condition): Promise<number> {
+  const db = await openDB();
+  return db.add('conditions', condition);
+}
+
+export async function updateCondition(id: number, condition: Partial<Condition>): Promise<void> {
+  const db = await openDB();
+  const existing = await db.get('conditions', id);
+  if (existing) {
+    await db.put('conditions', { ...existing, ...condition, id });
+  }
+}
+
+export async function deleteCondition(id: number): Promise<void> {
+  const db = await openDB();
+  await db.delete('conditions', id);
+}// ========================================
+// CONDITIONS CRUD
+// ========================================
+
+export async function getConditions(): Promise<Condition[]> {
+  const db = await openDB();
+  return db.getAll('conditions');
+}
+
+export async function createCondition(condition: Condition): Promise<number> {
+  const db = await openDB();
+  return db.add('conditions', condition);
+}
+
+export async function updateCondition(id: number, condition: Partial<Condition>): Promise<void> {
+  const db = await openDB();
+  const existing = await db.get('conditions', id);
+  if (existing) {
+    await db.put('conditions', { ...existing, ...condition, id });
+  }
+}
+
+export async function deleteCondition(id: number): Promise<void> {
+  const db = await openDB();
+  await db.delete('conditions', id);
+}
