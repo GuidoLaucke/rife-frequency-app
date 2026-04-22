@@ -45,7 +45,7 @@ interface AlchewatDB extends DBSchema {
 }
 
 const DB_NAME = 'alchewat-pulse-db';
-const DB_VERSION = 2; // Erhöht von 1 auf 2 für neue Features
+const DB_VERSION = 3; // Erhöht von 1 auf 2 für neue Features
 
 let dbInstance: IDBPDatabase<AlchewatDB> | null = null;
 
@@ -251,3 +251,212 @@ export const db = {
     return db.delete(storeName, id);
   },
 };
+
+// Add these to your existing db.ts file
+
+// NEW INTERFACES (add to existing interfaces section)
+export interface ConditionFrequency {
+  id?: number;
+  conditionId: number;
+  frequencyId: number;
+  createdAt: Date;
+}
+
+export interface ConditionSequence {
+  id?: number;
+  conditionId: number;
+  sequenceId: number;
+  createdAt: Date;
+}
+
+// UPDATE DB_VERSION (change existing)
+const DB_VERSION = 3; // <- Change from 2 to 3
+
+// UPDATE openDB function - add new stores to the upgrade section:
+/*
+In your existing openDB() function, in the if (db.version < 3) block, add:
+
+if (!db.objectStoreNames.contains('conditionFrequencies')) {
+  const condFreqStore = db.createObjectStore('conditionFrequencies', { 
+    keyPath: 'id', 
+    autoIncrement: true 
+  });
+  condFreqStore.createIndex('conditionId', 'conditionId', { unique: false });
+  condFreqStore.createIndex('frequencyId', 'frequencyId', { unique: false });
+}
+
+if (!db.objectStoreNames.contains('conditionSequences')) {
+  const condSeqStore = db.createObjectStore('conditionSequences', { 
+    keyPath: 'id', 
+    autoIncrement: true 
+  });
+  condSeqStore.createIndex('conditionId', 'conditionId', { unique: false });
+  condSeqStore.createIndex('sequenceId', 'sequenceId', { unique: false });
+}
+*/
+
+// NEW FUNCTIONS (add at the end of your db.ts file)
+
+// ========================================
+// CONDITION FREQUENCIES
+// ========================================
+
+export async function assignFrequencyToCondition(
+  conditionId: number,
+  frequencyId: number
+): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('conditionFrequencies', 'readwrite');
+  
+  // Check if already assigned
+  const index = tx.store.index('conditionId');
+  const existing = await index.getAll(conditionId);
+  const alreadyAssigned = existing.some((cf: ConditionFrequency) => cf.frequencyId === frequencyId);
+  
+  if (!alreadyAssigned) {
+    await tx.store.add({
+      conditionId,
+      frequencyId,
+      createdAt: new Date(),
+    });
+  }
+  
+  await tx.done;
+}
+
+export async function removeFrequencyFromCondition(
+  conditionId: number,
+  frequencyId: number
+): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('conditionFrequencies', 'readwrite');
+  
+  const index = tx.store.index('conditionId');
+  const records = await index.getAll(conditionId);
+  
+  for (const record of records) {
+    if (record.frequencyId === frequencyId) {
+      await tx.store.delete(record.id!);
+    }
+  }
+  
+  await tx.done;
+}
+
+export async function getFrequenciesForCondition(conditionId: number): Promise<Frequency[]> {
+  const db = await openDB();
+  const tx = db.transaction(['conditionFrequencies', 'frequencies'], 'readonly');
+  
+  const index = tx.objectStore('conditionFrequencies').index('conditionId');
+  const assignments = await index.getAll(conditionId);
+  
+  const frequencies: Frequency[] = [];
+  for (const assignment of assignments) {
+    const freq = await tx.objectStore('frequencies').get(assignment.frequencyId);
+    if (freq) {
+      frequencies.push(freq);
+    }
+  }
+  
+  return frequencies;
+}
+
+export async function getConditionsForFrequency(frequencyId: number): Promise<Condition[]> {
+  const db = await openDB();
+  const tx = db.transaction(['conditionFrequencies', 'conditions'], 'readonly');
+  
+  const index = tx.objectStore('conditionFrequencies').index('frequencyId');
+  const assignments = await index.getAll(frequencyId);
+  
+  const conditions: Condition[] = [];
+  for (const assignment of assignments) {
+    const cond = await tx.objectStore('conditions').get(assignment.conditionId);
+    if (cond) {
+      conditions.push(cond);
+    }
+  }
+  
+  return conditions;
+}
+
+// ========================================
+// CONDITION SEQUENCES
+// ========================================
+
+export async function assignSequenceToCondition(
+  conditionId: number,
+  sequenceId: number
+): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('conditionSequences', 'readwrite');
+  
+  const index = tx.store.index('conditionId');
+  const existing = await index.getAll(conditionId);
+  const alreadyAssigned = existing.some((cs: ConditionSequence) => cs.sequenceId === sequenceId);
+  
+  if (!alreadyAssigned) {
+    await tx.store.add({
+      conditionId,
+      sequenceId,
+      createdAt: new Date(),
+    });
+  }
+  
+  await tx.done;
+}
+
+export async function removeSequenceFromCondition(
+  conditionId: number,
+  sequenceId: number
+): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction('conditionSequences', 'readwrite');
+  
+  const index = tx.store.index('conditionId');
+  const records = await index.getAll(conditionId);
+  
+  for (const record of records) {
+    if (record.sequenceId === sequenceId) {
+      await tx.store.delete(record.id!);
+    }
+  }
+  
+  await tx.done;
+}
+
+export async function getSequencesForCondition(conditionId: number): Promise<Sequence[]> {
+  const db = await openDB();
+  const tx = db.transaction(['conditionSequences', 'sequences'], 'readonly');
+  
+  const index = tx.objectStore('conditionSequences').index('conditionId');
+  const assignments = await index.getAll(conditionId);
+  
+  const sequences: Sequence[] = [];
+  for (const assignment of assignments) {
+    const seq = await tx.objectStore('sequences').get(assignment.sequenceId);
+    if (seq) {
+      sequences.push(seq);
+    }
+  }
+  
+  return sequences;
+}
+
+export async function getConditionsForSequence(sequenceId: number): Promise<Condition[]> {
+  const db = await openDB();
+  const tx = db.transaction(['conditionSequences', 'conditions'], 'readonly');
+  
+  const index = tx.objectStore('conditionSequences').index('sequenceId');
+  const assignments = await index.getAll(sequenceId);
+  
+  const conditions: Condition[] = [];
+  for (const assignment of assignments) {
+    const cond = await tx.objectStore('conditions').get(assignment.conditionId);
+    if (cond) {
+      conditions.push(cond);
+    }
+  }
+  
+  return conditions;
+}
+
