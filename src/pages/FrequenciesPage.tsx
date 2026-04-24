@@ -1,12 +1,32 @@
+/**
+ * FrequenciesPage v2.0 - With Search, Sort & Filters
+ * File: FrequenciesPage-v2.0-search-sort-20250424.tsx
+ * Date: 2025-04-24
+ * 
+ * CHANGES v2.0:
+ * - Added: Search field (live search by name, description, hz)
+ * - Added: Sorting (Hz asc/desc, Name A-Z/Z-A)
+ * - Added: Frequency range filters (0-10, 10-100, 100-1000, 1000+)
+ * - Combined filter logic (search + range + sort)
+ * 
+ * DEPENDENCIES:
+ * - db.ts v3.0+
+ * - react-i18next
+ * - react-router-dom
+ */
+
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { AssignmentModal } from '@/components/assignment/AssignmentModal';
 import { QuickCreateModal } from '@/components/assignment/QuickCreateModal';
 import { useNavigate } from 'react-router-dom';
 import { getFrequencies, createFrequency, updateFrequency, deleteFrequency, type Frequency } from '@/lib/db';
-import { Plus, Trash2, Edit, Link as LinkIcon, Play } from 'lucide-react';
+import { Plus, Trash2, Edit, Link as LinkIcon, Play, Search, X, ArrowUpDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+
+type SortOption = 'hz-asc' | 'hz-desc' | 'name-asc' | 'name-desc';
+type FrequencyRange = 'all' | '0-10' | '10-100' | '100-1000' | '1000+';
 
 export function FrequenciesPage() {
   const { t } = useTranslation();
@@ -20,6 +40,11 @@ export function FrequenciesPage() {
     description: '',
     color: '#8B5CF6',
   });
+
+  // NEW: Search, Sort & Filter state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOption, setSortOption] = useState<SortOption>('hz-asc');
+  const [selectedRange, setSelectedRange] = useState<FrequencyRange>('all');
 
   // Assignment modal state
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);
@@ -122,7 +147,6 @@ export function FrequenciesPage() {
     setShowAssignmentModal(true);
   };
 
-  // NEW: Navigate to player with frequency pre-selected
   const handlePlayFrequency = (frequency: Frequency) => {
     navigate(`/player?frequency=${frequency.id}`);
   };
@@ -141,6 +165,53 @@ export function FrequenciesPage() {
       setTimeout(() => setShowAssignmentModal(true), 100);
     }
   };
+
+  // NEW: Filter + Sort Logic
+  const filteredAndSortedFrequencies = frequencies
+    .filter(freq => {
+      // Range filter
+      if (selectedRange !== 'all') {
+        const hz = freq.hz;
+        switch (selectedRange) {
+          case '0-10':
+            if (hz > 10) return false;
+            break;
+          case '10-100':
+            if (hz < 10 || hz > 100) return false;
+            break;
+          case '100-1000':
+            if (hz < 100 || hz > 1000) return false;
+            break;
+          case '1000+':
+            if (hz < 1000) return false;
+            break;
+        }
+      }
+
+      // Search filter
+      const query = searchQuery.toLowerCase().trim();
+      if (!query) return true;
+
+      const matchesName = freq.name.toLowerCase().includes(query);
+      const matchesDescription = freq.description?.toLowerCase().includes(query) || false;
+      const matchesHz = String(freq.hz).includes(query);
+
+      return matchesName || matchesDescription || matchesHz;
+    })
+    .sort((a, b) => {
+      switch (sortOption) {
+        case 'hz-asc':
+          return a.hz - b.hz;
+        case 'hz-desc':
+          return b.hz - a.hz;
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        default:
+          return 0;
+      }
+    });
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -167,9 +238,120 @@ export function FrequenciesPage() {
             </button>
           </div>
 
+          {/* Search Field */}
+          <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-4 mb-6">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('common.search') + '...'}
+                className="w-full bg-black/20 border border-white/10 focus:border-primary/50 rounded-lg h-12 pl-12 pr-4 text-white placeholder:text-muted-foreground"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Filters & Sort */}
+          <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Frequency Range Filter */}
+              <div>
+                <h3 className="text-sm font-medium text-white mb-3 flex items-center gap-2">
+                  <span>Frequenzbereich</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setSelectedRange('all')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      selectedRange === 'all'
+                        ? 'bg-primary text-white'
+                        : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                    }`}
+                  >
+                    Alle
+                  </button>
+                  <button
+                    onClick={() => setSelectedRange('0-10')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      selectedRange === '0-10'
+                        ? 'bg-primary text-white'
+                        : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                    }`}
+                  >
+                    0-10 Hz
+                  </button>
+                  <button
+                    onClick={() => setSelectedRange('10-100')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      selectedRange === '10-100'
+                        ? 'bg-primary text-white'
+                        : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                    }`}
+                  >
+                    10-100 Hz
+                  </button>
+                  <button
+                    onClick={() => setSelectedRange('100-1000')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      selectedRange === '100-1000'
+                        ? 'bg-primary text-white'
+                        : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                    }`}
+                  >
+                    100-1000 Hz
+                  </button>
+                  <button
+                    onClick={() => setSelectedRange('1000+')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      selectedRange === '1000+'
+                        ? 'bg-primary text-white'
+                        : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                    }`}
+                  >
+                    1000+ Hz
+                  </button>
+                </div>
+              </div>
+
+              {/* Sort Options */}
+              <div>
+                <h3 className="text-sm font-medium text-white mb-3 flex items-center gap-2">
+                  <ArrowUpDown className="w-4 h-4" />
+                  <span>Sortierung</span>
+                </h3>
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value as SortOption)}
+                  className="w-full bg-black/20 border border-white/10 focus:border-primary/50 rounded-lg h-11 px-4 text-white"
+                >
+                  <option value="hz-asc">Hz aufsteigend (niedrig → hoch)</option>
+                  <option value="hz-desc">Hz absteigend (hoch → niedrig)</option>
+                  <option value="name-asc">Name A → Z</option>
+                  <option value="name-desc">Name Z → A</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Results Count */}
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <p className="text-muted-foreground text-sm">
+                {filteredAndSortedFrequencies.length} {filteredAndSortedFrequencies.length === 1 ? 'Frequenz' : 'Frequenzen'} gefunden
+              </p>
+            </div>
+          </div>
+
           {/* Frequencies Grid */}
           <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {frequencies.map((frequency) => (
+            {filteredAndSortedFrequencies.map((frequency) => (
               <div
                 key={frequency.id}
                 className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 hover:bg-white/10 transition-all"
@@ -190,7 +372,7 @@ export function FrequenciesPage() {
                 </div>
 
                 {frequency.description && (
-                  <p className="text-muted-foreground text-sm mb-4">
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                     {frequency.description}
                   </p>
                 )}
@@ -203,7 +385,6 @@ export function FrequenciesPage() {
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
-                  {/* NEW: Player Button */}
                   <button
                     onClick={() => handlePlayFrequency(frequency)}
                     className="flex-1 flex items-center justify-center gap-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg px-4 py-2.5 text-sm font-medium transition-all"
@@ -238,10 +419,22 @@ export function FrequenciesPage() {
               </div>
             ))}
           </div>
+
+          {filteredAndSortedFrequencies.length === 0 && (
+            <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-12 text-center">
+              <Search className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-heading font-bold text-white mb-2">
+                Keine Frequenzen gefunden
+              </h3>
+              <p className="text-muted-foreground">
+                Versuche andere Suchbegriffe oder Filter
+              </p>
+            </div>
+          )}
         </div>
       </main>
 
-      {/* Create/Edit Modal - same as before */}
+      {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="backdrop-blur-2xl bg-black/60 rounded-2xl border border-white/10 p-6 max-w-md w-full">
