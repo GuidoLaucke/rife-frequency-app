@@ -1,0 +1,701 @@
+[
+  {
+    "name": "Kopfschmerzen",
+    "category": "physical_health",
+    "color": "#E74C3C",
+    "tags": ["kopf", "schmerzen", "migräne"],
+    "description": "Headaches - Rife Frequenztherapie nach Dr. Rife",
+    "frequencies": [
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Rückenschmerzen",
+    "category": "physical_health",
+    "color": "#3498DB",
+    "tags": ["rücken", "schmerzen", "wirbelsäule"],
+    "description": "Backache - Rückenschmerzen Behandlung",
+    "frequencies": [
+      { "hz": 760, "duration": 180 },
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Arthritis",
+    "category": "physical_health",
+    "color": "#9B59B6",
+    "tags": ["gelenke", "entzündung", "arthritis", "rheuma"],
+    "description": "Arthritis - Gelenkerkrankung",
+    "frequencies": [
+      { "hz": 10000, "duration": 180 },
+      { "hz": 2489, "duration": 180 },
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 28, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Migräne",
+    "category": "physical_health",
+    "color": "#E67E22",
+    "tags": ["kopf", "migräne", "schmerzen"],
+    "description": "Migraine - Migränebehandlung",
+    "frequencies": [
+      { "hz": 5000, "duration": 180 },
+      { "hz": 20, "duration": 180 },
+      { "hz": 10, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Asthma",
+    "category": "physical_health",
+    "color": "#1ABC9C",
+    "tags": ["atmung", "lunge", "asthma"],
+    "description": "Asthma - Atemwegserkrankung",
+    "frequencies": [
+      { "hz": 2720, "duration": 180 },
+      { "hz": 2170, "duration": 180 },
+      { "hz": 1800, "duration": 180 },
+      { "hz": 1600, "duration": 180 },
+      { "hz": 1500, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Diabetes",
+    "category": "physical_health",
+    "color": "#F39C12",
+    "tags": ["diabetes", "blutzucker", "stoffwechsel"],
+    "description": "Diabetes - Blutzuckererkrankung",
+    "frequencies": [
+      { "hz": 35, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 10000, "duration": 180 },
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Bluthochdruck",
+    "category": "physical_health",
+    "color": "#C0392B",
+    "tags": ["herz", "blutdruck", "hypertonie"],
+    "description": "High blood pressure - Bluthochdruck",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 5000, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Schlaflosigkeit",
+    "category": "physical_health",
+    "color": "#34495E",
+    "tags": ["schlaf", "insomnie", "ruhe"],
+    "description": "Insomnia - Schlafstörungen",
+    "frequencies": [
+      { "hz": 1550, "duration": 180 },
+      { "hz": 1500, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 10, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Erkältung",
+    "category": "physical_health",
+    "color": "#16A085",
+    "tags": ["erkältung", "grippe", "infektion"],
+    "description": "Cold in head - Erkältung",
+    "frequencies": [
+      { "hz": 10000, "duration": 180 },
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 776, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 444, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Verstopfung",
+    "category": "physical_health",
+    "color": "#D35400",
+    "tags": ["verdauung", "darm", "verstopfung"],
+    "description": "Constipation - Verstopfung",
+    "frequencies": [
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 776, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Nierensteine",
+    "category": "physical_health",
+    "color": "#8E44AD",
+    "tags": ["nieren", "steine", "harnwege"],
+    "description": "Kidney stones - Nierensteine",
+    "frequencies": [
+      { "hz": 10, "duration": 180 },
+      { "hz": 40, "duration": 180 },
+      { "hz": 440, "duration": 180 },
+      { "hz": 1600, "duration": 180 },
+      { "hz": 1550, "duration": 180 },
+      { "hz": 1500, "duration": 180 },
+      { "hz": 880, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Gallensteine",
+    "category": "physical_health",
+    "color": "#27AE60",
+    "tags": ["galle", "steine", "leber"],
+    "description": "Gall Stones - Gallensteine",
+    "frequencies": [
+      { "hz": 3000, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 20, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Hämorrhoiden",
+    "category": "physical_health",
+    "color": "#E74C3C",
+    "tags": ["hämorrhoiden", "darm", "schmerzen"],
+    "description": "Hemorrhoids - Hämorrhoiden",
+    "frequencies": [
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 447, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Bronchitis",
+    "category": "physical_health",
+    "color": "#3498DB",
+    "tags": ["lunge", "bronchien", "husten"],
+    "description": "Bronchitis - Bronchienentzündung",
+    "frequencies": [
+      { "hz": 880, "duration": 180 },
+      { "hz": 727, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Knieschmerzen",
+    "category": "physical_health",
+    "color": "#95A5A6",
+    "tags": ["knie", "gelenk", "schmerzen"],
+    "description": "Knee pain - Knieschmerzen",
+    "frequencies": [
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Zahnschmerzen",
+    "category": "physical_health",
+    "color": "#ECF0F1",
+    "tags": ["zahn", "schmerzen", "dental"],
+    "description": "Toothache - Zahnschmerzen",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Sinusitis",
+    "category": "physical_health",
+    "color": "#1ABC9C",
+    "tags": ["nebenhöhlen", "nase", "entzündung"],
+    "description": "Sinusitis - Nebenhöhlenentzündung",
+    "frequencies": [
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 125, "duration": 180 },
+      { "hz": 72, "duration": 180 },
+      { "hz": 522, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Halsschmerzen",
+    "category": "physical_health",
+    "color": "#E67E22",
+    "tags": ["hals", "schmerzen", "entzündung"],
+    "description": "Sore throat - Halsschmerzen",
+    "frequencies": [
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Ekzem",
+    "category": "physical_health",
+    "color": "#F39C12",
+    "tags": ["haut", "ekzem", "entzündung"],
+    "description": "Eczema - Hautekzem",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 5000, "duration": 180 },
+      { "hz": 1550, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Akne",
+    "category": "physical_health",
+    "color": "#E74C3C",
+    "tags": ["haut", "akne", "pickel"],
+    "description": "Acne - Akne und Pickel",
+    "frequencies": [
+      { "hz": 2720, "duration": 180 },
+      { "hz": 2170, "duration": 180 },
+      { "hz": 1800, "duration": 180 },
+      { "hz": 1600, "duration": 180 },
+      { "hz": 1500, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Warzen",
+    "category": "physical_health",
+    "color": "#95A5A6",
+    "tags": ["haut", "warzen", "virus"],
+    "description": "Warts - Warzen",
+    "frequencies": [
+      { "hz": 2720, "duration": 180 },
+      { "hz": 2489, "duration": 180 },
+      { "hz": 2170, "duration": 180 },
+      { "hz": 2127, "duration": 180 },
+      { "hz": 2008, "duration": 180 },
+      { "hz": 1800, "duration": 180 },
+      { "hz": 1600, "duration": 180 },
+      { "hz": 1500, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 690, "duration": 180 },
+      { "hz": 666, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Übelkeit",
+    "category": "physical_health",
+    "color": "#16A085",
+    "tags": ["magen", "übelkeit", "verdauung"],
+    "description": "Nausea - Übelkeit",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 5000, "duration": 180 },
+      { "hz": 832, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Sodbrennen",
+    "category": "physical_health",
+    "color": "#E67E22",
+    "tags": ["magen", "sodbrennen", "reflux"],
+    "description": "Heartburn - Sodbrennen",
+    "frequencies": [
+      { "hz": 832, "duration": 180 },
+      { "hz": 2720, "duration": 180 },
+      { "hz": 2170, "duration": 180 },
+      { "hz": 2127, "duration": 180 },
+      { "hz": 1800, "duration": 180 },
+      { "hz": 1600, "duration": 180 },
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Durchfall",
+    "category": "physical_health",
+    "color": "#D35400",
+    "tags": ["darm", "durchfall", "verdauung"],
+    "description": "Diarrhea - Durchfall",
+    "frequencies": [
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 465, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Blähungen",
+    "category": "physical_health",
+    "color": "#27AE60",
+    "tags": ["darm", "blähungen", "gas"],
+    "description": "Flatulence - Blähungen",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 5000, "duration": 180 },
+      { "hz": 1550, "duration": 180 },
+      { "hz": 465, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Menstruationsschmerzen",
+    "category": "physical_health",
+    "color": "#E74C3C",
+    "tags": ["menstruation", "schmerzen", "krämpfe"],
+    "description": "Menstrual cramps - Menstruationskrämpfe",
+    "frequencies": [
+      { "hz": 26, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Harnwegsinfektion",
+    "category": "physical_health",
+    "color": "#3498DB",
+    "tags": ["harnwege", "blase", "infektion"],
+    "description": "Urinary tract infection - Harnwegsinfektion",
+    "frequencies": [
+      { "hz": 5000, "duration": 180 },
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 800, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 465, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Prostatabeschwerden",
+    "category": "physical_health",
+    "color": "#9B59B6",
+    "tags": ["prostata", "männer", "harnwege"],
+    "description": "Prostate complaints - Prostatabeschwerden",
+    "frequencies": [
+      { "hz": 2127, "duration": 180 },
+      { "hz": 2008, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 690, "duration": 180 },
+      { "hz": 666, "duration": 180 },
+      { "hz": 465, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Tinnitus",
+    "category": "physical_health",
+    "color": "#34495E",
+    "tags": ["ohr", "tinnitus", "geräusch"],
+    "description": "Tinnitus - Ohrgeräusche",
+    "frequencies": [
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Schwindel",
+    "category": "physical_health",
+    "color": "#1ABC9C",
+    "tags": ["gleichgewicht", "schwindel", "ohr"],
+    "description": "Dizziness - Schwindel",
+    "frequencies": [
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Müdigkeit",
+    "category": "physical_health",
+    "color": "#95A5A6",
+    "tags": ["müdigkeit", "erschöpfung", "energie"],
+    "description": "Fatigue - Müdigkeit",
+    "frequencies": [
+      { "hz": 428, "duration": 180 },
+      { "hz": 660, "duration": 180 },
+      { "hz": 465, "duration": 180 },
+      { "hz": 125, "duration": 180 },
+      { "hz": 95, "duration": 180 },
+      { "hz": 72, "duration": 180 },
+      { "hz": 20, "duration": 180 },
+      { "hz": 444, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Verbrennungen",
+    "category": "physical_health",
+    "color": "#E74C3C",
+    "tags": ["haut", "verbrennungen", "wunden"],
+    "description": "Burns - Verbrennungen",
+    "frequencies": [
+      { "hz": 190, "duration": 180 },
+      { "hz": 10000, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 465, "duration": 180 },
+      { "hz": 200, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Wundheilung",
+    "category": "physical_health",
+    "color": "#27AE60",
+    "tags": ["wunde", "heilung", "regeneration"],
+    "description": "Wound healing - Wundheilung",
+    "frequencies": [
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 220, "duration": 180 },
+      { "hz": 190, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Knochenbrüche",
+    "category": "physical_health",
+    "color": "#ECF0F1",
+    "tags": ["knochen", "bruch", "heilung"],
+    "description": "Fractures - Knochenbrüche",
+    "frequencies": [
+      { "hz": 220, "duration": 180 },
+      { "hz": 230, "duration": 180 },
+      { "hz": 10000, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Prellungen",
+    "category": "physical_health",
+    "color": "#9B59B6",
+    "tags": ["prellung", "trauma", "schmerz"],
+    "description": "Bruises - Prellungen",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Muskelschmerzen",
+    "category": "physical_health",
+    "color": "#E67E22",
+    "tags": ["muskeln", "schmerzen", "verspannung"],
+    "description": "Muscular pain - Muskelschmerzen",
+    "frequencies": [
+      { "hz": 320, "duration": 180 },
+      { "hz": 250, "duration": 180 },
+      { "hz": 240, "duration": 180 },
+      { "hz": 160, "duration": 180 },
+      { "hz": 125, "duration": 180 },
+      { "hz": 80, "duration": 180 },
+      { "hz": 40, "duration": 180 },
+      { "hz": 20, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Gelenkschmerzen",
+    "category": "physical_health",
+    "color": "#3498DB",
+    "tags": ["gelenke", "schmerzen", "entzündung"],
+    "description": "Joint pain - Gelenkschmerzen",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Nackenschmerzen",
+    "category": "physical_health",
+    "color": "#16A085",
+    "tags": ["nacken", "schmerzen", "verspannung"],
+    "description": "Neck pain - Nackenschmerzen",
+    "frequencies": [
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Schulterschmerzen",
+    "category": "physical_health",
+    "color": "#D35400",
+    "tags": ["schulter", "schmerzen", "gelenk"],
+    "description": "Shoulder pain - Schulterschmerzen",
+    "frequencies": [
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Ischias",
+    "category": "physical_health",
+    "color": "#8E44AD",
+    "tags": ["ischias", "nerv", "schmerzen"],
+    "description": "Sciatica - Ischiasnerv",
+    "frequencies": [
+      { "hz": 1550, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 690, "duration": 180 },
+      { "hz": 666, "duration": 180 },
+      { "hz": 10, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Bandscheibenvorfall",
+    "category": "physical_health",
+    "color": "#C0392B",
+    "tags": ["wirbelsäule", "bandscheibe", "nerv"],
+    "description": "Herniated disc - Bandscheibenvorfall",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Gicht",
+    "category": "physical_health",
+    "color": "#F39C12",
+    "tags": ["gicht", "gelenk", "harnsäure"],
+    "description": "Gout - Gicht",
+    "frequencies": [
+      { "hz": 3000, "duration": 180 },
+      { "hz": 10000, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 20, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Osteoporose",
+    "category": "physical_health",
+    "color": "#ECF0F1",
+    "tags": ["knochen", "osteoporose", "dichte"],
+    "description": "Bone regeneration - Knochenschwund",
+    "frequencies": [
+      { "hz": 2720, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Krampfadern",
+    "category": "physical_health",
+    "color": "#3498DB",
+    "tags": ["venen", "krampfadern", "durchblutung"],
+    "description": "Varicose veins - Krampfadern",
+    "frequencies": [
+      { "hz": 28, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Herzklopfen",
+    "category": "physical_health",
+    "color": "#E74C3C",
+    "tags": ["herz", "palpitationen", "rhythmus"],
+    "description": "Heart palpitations - Herzklopfen",
+    "frequencies": [
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 10000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Allergien",
+    "category": "physical_health",
+    "color": "#1ABC9C",
+    "tags": ["allergie", "immunsystem", "reaktion"],
+    "description": "Allergies - Allergien",
+    "frequencies": [
+      { "hz": 10000, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 3, "duration": 180 },
+      { "hz": 330, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  },
+  {
+    "name": "Heuschnupfen",
+    "category": "physical_health",
+    "color": "#27AE60",
+    "tags": ["allergie", "pollen", "nase"],
+    "description": "Hay Fever - Heuschnupfen",
+    "frequencies": [
+      { "hz": 20, "duration": 180 },
+      { "hz": 727, "duration": 180 },
+      { "hz": 787, "duration": 180 },
+      { "hz": 880, "duration": 180 },
+      { "hz": 5000, "duration": 180 }
+    ]
+  }
+]

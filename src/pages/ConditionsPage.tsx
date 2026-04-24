@@ -1,7 +1,12 @@
 /**
- * ConditionsPage v1.2 - With i18n Support
- * File: ConditionsPage-v1.2-i18n-20250424.tsx
+ * ConditionsPage v1.3 - With Player Button & Button Labels
+ * File: ConditionsPage-v1.3-player-20250424.tsx
  * Date: 2025-04-24
+ * 
+ * CHANGES v1.3:
+ * - Added: Player button to start condition in PlayerPage
+ * - Added: Button text labels (Player, Edit, Delete)
+ * - Fixed: Navigate to player with condition frequencies
  * 
  * CHANGES v1.2:
  * - Fixed: "Alle" button now uses t('conditions.all')
@@ -9,18 +14,16 @@
  * - Fixed: All hardcoded German text replaced with i18n keys
  * - Works properly with Russian/German/English/Italian
  * 
- * CHANGES v1.1:
- * - Smart category pre-selection
- * - Modal fully translated
- * 
  * DEPENDENCIES:
  * - db.ts v3.0+
  * - react-i18next
+ * - react-router-dom
  * - AssignmentModal
  * - QuickCreateModal
  */
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { AssignmentModal } from '@/components/assignment/AssignmentModal';
 import { QuickCreateModal } from '@/components/assignment/QuickCreateModal';
@@ -33,17 +36,19 @@ import {
   type Condition,
   type Category,
 } from '@/lib/db';
-import { Plus, Edit, Trash2, X, Radio, FileText, Link as LinkIcon } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Radio, FileText, Link as LinkIcon, Play, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
 export function ConditionsPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [conditions, setConditions] = useState<Condition[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingCondition, setEditingCondition] = useState<Condition | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -139,6 +144,17 @@ export function ConditionsPage() {
     }
   };
 
+  const handlePlayCondition = (condition: Condition) => {
+    // Navigate to player with condition frequencies
+    navigate('/player', { 
+      state: { 
+        conditionId: condition.id,
+        conditionName: condition.name,
+        frequencies: condition.frequencies || []
+      } 
+    });
+  };
+
   const handleAddTag = () => {
     const tag = formData.tagInput.trim();
     if (tag && !formData.tags.includes(tag)) {
@@ -194,9 +210,32 @@ export function ConditionsPage() {
     setShowModal(true);
   };
 
-  const filteredConditions = selectedCategory
-    ? conditions.filter(c => c.categoryId === selectedCategory)
-    : conditions;
+  // Helper to get correct i18n key for category
+  const getCategoryI18nKey = (categoryKey: string): string => {
+    const keyMap: Record<string, string> = {
+      'physical': 'physical_health',
+      'mental': 'mental_health',
+      'spiritual': 'spiritual',
+      'physical_health': 'physical_health',
+      'mental_health': 'mental_health',
+    };
+    return `category.${keyMap[categoryKey] || categoryKey}`;
+  };
+
+  const filteredConditions = conditions.filter(condition => {
+    // Category filter
+    const matchesCategory = selectedCategory === null || condition.categoryId === selectedCategory;
+    
+    // Search filter
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return matchesCategory;
+    
+    const matchesName = condition.name.toLowerCase().includes(query);
+    const matchesDescription = condition.description?.toLowerCase().includes(query) || false;
+    const matchesTags = condition.tags?.some(tag => tag.toLowerCase().includes(query)) || false;
+    
+    return matchesCategory && (matchesName || matchesDescription || matchesTags);
+  });
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -217,6 +256,28 @@ export function ConditionsPage() {
               <Plus className="w-5 h-5" />
               {t('conditions.new')}
             </button>
+          </div>
+
+          {/* Search Field */}
+          <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-4 mb-6">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('common.search') + '...'}
+                className="w-full bg-black/20 border border-white/10 focus:border-primary/50 rounded-lg h-12 pl-12 pr-4 text-white placeholder:text-muted-foreground"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Category Filter */}
@@ -241,7 +302,7 @@ export function ConditionsPage() {
                     : 'bg-white/5 text-muted-foreground hover:bg-white/10'
                 }`}
               >
-                {t(`category.${category.key}`)}
+                {t(getCategoryI18nKey(category.key))}
               </button>
             ))}
           </div>
@@ -283,7 +344,7 @@ export function ConditionsPage() {
                         </h3>
                         {category && (
                           <span className="inline-block px-2 py-1 bg-primary/20 text-primary text-xs rounded">
-                            {t(`category.${category.key}`)}
+                            {t(getCategoryI18nKey(category.key))}
                           </span>
                         )}
                       </div>
@@ -308,27 +369,45 @@ export function ConditionsPage() {
                       </div>
                     )}
 
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* Player Button - FULL WIDTH */}
+                      <button
+                        onClick={() => handlePlayCondition(condition)}
+                        className="col-span-2 flex items-center justify-center gap-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg px-4 py-2.5 text-sm font-medium transition-all"
+                        title={t('player.title')}
+                      >
+                        <Play className="w-4 h-4" />
+                        {t('player.title')}
+                      </button>
+
+                      {/* Assign Button - WITH TEXT */}
                       <button
                         onClick={() => handleAssign(condition)}
-                        className="flex-1 flex items-center justify-center gap-2 bg-accent/20 hover:bg-accent/30 text-accent rounded-lg px-4 py-2.5 text-sm font-medium transition-all"
+                        className="flex items-center justify-center gap-2 bg-accent/20 hover:bg-accent/30 text-accent rounded-lg px-3 py-2.5 text-sm font-medium transition-all"
                         title={t('common.assign')}
                       >
                         <LinkIcon className="w-4 h-4" />
+                        <span className="hidden md:inline">{t('common.assign')}</span>
                       </button>
                       
+                      {/* Edit Button - WITH TEXT */}
                       <button
                         onClick={() => handleEdit(condition)}
-                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-all"
+                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white rounded-lg px-3 py-2.5 text-sm font-medium transition-all"
+                        title={t('common.edit')}
                       >
                         <Edit className="w-4 h-4" />
+                        <span className="hidden md:inline">{t('common.edit')}</span>
                       </button>
                       
+                      {/* Delete Button - FULL WIDTH WITH TEXT */}
                       <button
                         onClick={() => handleDelete(condition.id!)}
-                        className="flex items-center justify-center gap-2 bg-destructive/20 hover:bg-destructive/30 text-destructive rounded-lg px-4 py-2.5 text-sm font-medium transition-all"
+                        className="col-span-2 flex items-center justify-center gap-2 bg-destructive/20 hover:bg-destructive/30 text-destructive rounded-lg px-4 py-2.5 text-sm font-medium transition-all"
+                        title={t('common.delete')}
                       >
                         <Trash2 className="w-4 h-4" />
+                        {t('common.delete')}
                       </button>
                     </div>
                   </div>
@@ -381,7 +460,7 @@ export function ConditionsPage() {
                 >
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
-                      {t(`category.${category.key}`)}
+                      {t(getCategoryI18nKey(category.key))}
                     </option>
                   ))}
                 </select>

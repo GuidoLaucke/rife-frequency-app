@@ -1,18 +1,18 @@
 /**
- * PlayerPage v2.2 - With Create Buttons (Person/Frequency/Sequence)
- * File: PlayerPage-v2.2-with-create-buttons-20250424.tsx
+ * PlayerPage v2.3 - With Condition Support
+ * File: PlayerPage-v2.3-condition-support-20250424.tsx
  * Date: 2025-04-24
  * 
- * CHANGES v2.2:
- * - Added "+ Neue Person" button → navigates to /persons
- * - Added "+ Neue Frequenz" button → navigates to /frequencies
- * - Added "+ Neue Sequenz" button → navigates to /sequences
- * - All buttons navigate instead of opening modals
+ * CHANGES v2.3:
+ * - Added: Condition support via location.state
+ * - Added: Auto-load condition frequencies from ConditionsPage
+ * - Added: Display condition name when playing from condition
+ * - Added: Condition mode (plays frequencies from condition directly)
  * 
  * PREVIOUS CHANGES:
+ * v2.2: Create buttons for Person/Frequency/Sequence
  * v2.1: Wave visualization with 4 waveform types
  * v2.0: Person filtering working
- * v1.0: Initial player with audio playback
  * 
  * DEPENDENCIES:
  * - db.ts v3.1+
@@ -32,14 +32,21 @@ import {
   type Sequence, 
   type Person 
 } from '@/lib/db';
-import { Play, Pause, Volume2, Users, Radio, ListOrdered, Plus } from 'lucide-react';
+import { Play, Pause, Volume2, Users, Radio, ListOrdered, Plus, Activity } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+
+// Condition frequency from navigation state
+interface ConditionFrequency {
+  hz: number;
+  duration: number;
+}
 
 export function PlayerPage() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [allFrequencies, setAllFrequencies] = useState<Frequency[]>([]);
   const [allSequences, setAllSequences] = useState<Sequence[]>([]);
@@ -49,7 +56,7 @@ export function PlayerPage() {
   const [displaySequences, setDisplaySequences] = useState<Sequence[]>([]);
   
   const [selectedPerson, setSelectedPerson] = useState<number | null>(null);
-  const [mode, setMode] = useState<'single' | 'sequence'>('single');
+  const [mode, setMode] = useState<'single' | 'sequence' | 'condition'>('single');
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(60);
@@ -59,6 +66,11 @@ export function PlayerPage() {
 
   const [selectedFrequencyIds, setSelectedFrequencyIds] = useState<number[]>([]);
   const [selectedSequenceIds, setSelectedSequenceIds] = useState<number[]>([]);
+
+  // NEW: Condition state
+  const [conditionId, setConditionId] = useState<number | null>(null);
+  const [conditionName, setConditionName] = useState<string | null>(null);
+  const [conditionFrequencies, setConditionFrequencies] = useState<ConditionFrequency[]>([]);
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
@@ -86,6 +98,19 @@ export function PlayerPage() {
       audioContextRef.current?.close();
     };
   }, []);
+
+  // NEW: Handle condition from navigation state
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.conditionId && state?.frequencies) {
+      setConditionId(state.conditionId);
+      setConditionName(state.conditionName || 'Anwendungsgebiet');
+      setConditionFrequencies(state.frequencies);
+      setMode('condition');
+      setSelectedFrequencyIds([]);
+      setSelectedSequenceIds([]);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const personId = searchParams.get('person');
@@ -242,7 +267,15 @@ export function PlayerPage() {
       setIsPlaying(false);
       stopAudio();
     } else {
-      if (mode === 'single' && selectedFrequencyIds.length > 0) {
+      // NEW: Condition mode
+      if (mode === 'condition' && conditionFrequencies.length > 0) {
+        const firstFreq = conditionFrequencies[0];
+        playFrequency(firstFreq.hz);
+        setIsPlaying(true);
+        setCurrentTime(0);
+        setCurrentFrequencyIndex(0);
+        setDuration(firstFreq.duration);
+      } else if (mode === 'single' && selectedFrequencyIds.length > 0) {
         const firstFreq = allFrequencies.find(f => f.id === selectedFrequencyIds[0]);
         if (firstFreq) {
           playFrequency(firstFreq.hz);
@@ -272,7 +305,21 @@ export function PlayerPage() {
     const interval = setInterval(() => {
       setCurrentTime((prev) => {
         if (prev >= duration - 1) {
-          if (mode === 'sequence' && selectedSequenceIds.length > 0) {
+          // NEW: Condition mode playback
+          if (mode === 'condition' && conditionFrequencies.length > 0) {
+            const nextIndex = currentFrequencyIndex + 1;
+            if (nextIndex < conditionFrequencies.length) {
+              const nextFreq = conditionFrequencies[nextIndex];
+              playFrequency(nextFreq.hz);
+              setCurrentFrequencyIndex(nextIndex);
+              setDuration(nextFreq.duration);
+              return 0;
+            } else {
+              setIsPlaying(false);
+              stopAudio();
+              return 0;
+            }
+          } else if (mode === 'sequence' && selectedSequenceIds.length > 0) {
             const currentSeq = allSequences.find(s => s.id === selectedSequenceIds[0]);
             if (currentSeq && currentSeq.frequencies) {
               const nextIndex = currentFrequencyIndex + 1;
@@ -302,7 +349,7 @@ export function PlayerPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isPlaying, duration, mode, selectedSequenceIds, currentFrequencyIndex, allFrequencies, allSequences]);
+  }, [isPlaying, duration, mode, selectedSequenceIds, currentFrequencyIndex, allFrequencies, allSequences, conditionFrequencies]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -311,7 +358,10 @@ export function PlayerPage() {
   };
 
   const getCurrentFrequencyName = () => {
-    if (mode === 'single' && selectedFrequencyIds.length > 0) {
+    if (mode === 'condition' && conditionFrequencies.length > 0) {
+      const freq = conditionFrequencies[currentFrequencyIndex];
+      return freq ? `${conditionName} - ${freq.hz} Hz` : '';
+    } else if (mode === 'single' && selectedFrequencyIds.length > 0) {
       const freq = allFrequencies.find(f => f.id === selectedFrequencyIds[0]);
       return freq ? `${freq.name} (${freq.hz} Hz)` : '';
     } else if (mode === 'sequence' && selectedSequenceIds.length > 0) {
@@ -325,6 +375,15 @@ export function PlayerPage() {
     return '';
   };
 
+  const handleClearCondition = () => {
+    setConditionId(null);
+    setConditionName(null);
+    setConditionFrequencies([]);
+    setMode('single');
+    setIsPlaying(false);
+    stopAudio();
+  };
+
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar />
@@ -335,43 +394,70 @@ export function PlayerPage() {
             <p className="text-muted-foreground">Spiele Frequenzen und Sequenzen ab</p>
           </div>
 
-          {/* Person Selection */}
-          <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Users className="w-6 h-6 text-secondary" />
-                <h2 className="text-xl font-heading font-bold text-white">Person wählen</h2>
+          {/* NEW: Condition Banner */}
+          {mode === 'condition' && conditionName && (
+            <div className="backdrop-blur-md bg-gradient-to-r from-accent/20 to-primary/20 border border-accent/30 rounded-xl p-6 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-accent/30 flex items-center justify-center">
+                    <Activity className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Anwendungsgebiet</p>
+                    <h3 className="text-xl font-heading font-bold text-white">{conditionName}</h3>
+                    <p className="text-sm text-accent mt-1">{conditionFrequencies.length} Frequenzen</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleClearCondition}
+                  className="bg-white/10 hover:bg-white/20 text-white rounded-lg px-4 py-2 text-sm font-medium transition-all"
+                >
+                  Zurücksetzen
+                </button>
               </div>
-              {/* NEW: Create Person Button */}
-              <button
-                onClick={() => navigate('/persons')}
-                className="flex items-center gap-2 bg-secondary/40 hover:bg-secondary/50 text-white rounded-lg px-4 py-2 text-sm font-medium transition-all shadow-lg"
-              >
-                <Plus className="w-4 h-4" />
-                Neue Person
-              </button>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <button onClick={() => handlePersonChange(null)} className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedPerson === null ? 'bg-secondary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>Alle</button>
-              {persons.map(person => (
-                <button key={person.id} onClick={() => handlePersonChange(person.id!)} className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedPerson === person.id ? 'bg-secondary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>{person.name}</button>
-              ))}
+          )}
+
+          {/* Person Selection */}
+          {mode !== 'condition' && (
+            <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Users className="w-6 h-6 text-secondary" />
+                  <h2 className="text-xl font-heading font-bold text-white">Person wählen</h2>
+                </div>
+                <button
+                  onClick={() => navigate('/persons')}
+                  className="flex items-center gap-2 bg-secondary/40 hover:bg-secondary/50 text-white rounded-lg px-4 py-2 text-sm font-medium transition-all shadow-lg"
+                >
+                  <Plus className="w-4 h-4" />
+                  Neue Person
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => handlePersonChange(null)} className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedPerson === null ? 'bg-secondary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>Alle</button>
+                {persons.map(person => (
+                  <button key={person.id} onClick={() => handlePersonChange(person.id!)} className={`px-4 py-2 rounded-lg font-medium transition-all ${selectedPerson === person.id ? 'bg-secondary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>{person.name}</button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Mode Selection */}
-          <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
-            <div className="flex gap-4">
-              <button onClick={() => setMode('single')} className={`flex-1 flex items-center justify-center gap-3 p-4 rounded-lg transition-all ${mode === 'single' ? 'bg-primary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>
-                <Radio className="w-6 h-6" />
-                <span className="font-medium">Einzelne Frequenz</span>
-              </button>
-              <button onClick={() => setMode('sequence')} className={`flex-1 flex items-center justify-center gap-3 p-4 rounded-lg transition-all ${mode === 'sequence' ? 'bg-primary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>
-                <ListOrdered className="w-6 h-6" />
-                <span className="font-medium">Sequenz</span>
-              </button>
+          {mode !== 'condition' && (
+            <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
+              <div className="flex gap-4">
+                <button onClick={() => setMode('single')} className={`flex-1 flex items-center justify-center gap-3 p-4 rounded-lg transition-all ${mode === 'single' ? 'bg-primary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>
+                  <Radio className="w-6 h-6" />
+                  <span className="font-medium">Einzelne Frequenz</span>
+                </button>
+                <button onClick={() => setMode('sequence')} className={`flex-1 flex items-center justify-center gap-3 p-4 rounded-lg transition-all ${mode === 'sequence' ? 'bg-primary text-white' : 'bg-white/5 text-muted-foreground hover:bg-white/10'}`}>
+                  <ListOrdered className="w-6 h-6" />
+                  <span className="font-medium">Sequenz</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Wave Visualization */}
           <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
@@ -388,14 +474,13 @@ export function PlayerPage() {
           </div>
 
           {/* Selection */}
-          {mode === 'single' ? (
+          {mode === 'single' && (
             <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-heading font-bold text-white">
                   Frequenzen auswählen
                   {selectedPerson && <span className="text-muted-foreground text-sm ml-2">({displayFrequencies.length} zugeordnet)</span>}
                 </h2>
-                {/* NEW: Create Frequency Button */}
                 <button
                   onClick={() => navigate('/frequencies')}
                   className="flex items-center gap-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg px-4 py-2 text-sm font-medium transition-all"
@@ -418,14 +503,15 @@ export function PlayerPage() {
                 {displayFrequencies.length === 0 && <p className="text-muted-foreground col-span-full text-center py-8">{selectedPerson ? 'Dieser Person sind noch keine Frequenzen zugeordnet' : 'Keine Frequenzen verfügbar'}</p>}
               </div>
             </div>
-          ) : (
+          )}
+
+          {mode === 'sequence' && (
             <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-heading font-bold text-white">
                   Sequenzen auswählen
                   {selectedPerson && <span className="text-muted-foreground text-sm ml-2">({displaySequences.length} zugeordnet)</span>}
                 </h2>
-                {/* NEW: Create Sequence Button */}
                 <button
                   onClick={() => navigate('/sequences')}
                   className="flex items-center gap-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg px-4 py-2 text-sm font-medium transition-all"
@@ -449,6 +535,31 @@ export function PlayerPage() {
             </div>
           )}
 
+          {/* Condition Frequency List */}
+          {mode === 'condition' && conditionFrequencies.length > 0 && (
+            <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-6 mb-6">
+              <h2 className="text-xl font-heading font-bold text-white mb-4">Frequenzen in diesem Anwendungsgebiet</h2>
+              <div className="space-y-2">
+                {conditionFrequencies.map((freq, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all ${
+                      isPlaying && currentFrequencyIndex === index
+                        ? 'bg-primary/20 border border-primary'
+                        : 'bg-white/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-muted-foreground font-mono text-sm w-6">{index + 1}.</span>
+                      <p className="text-white font-mono font-medium">{freq.hz} Hz</p>
+                    </div>
+                    <p className="text-muted-foreground text-sm">{formatTime(freq.duration)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Player Controls */}
           <div className="backdrop-blur-md bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/20 rounded-xl p-8">
             {isPlaying && (
@@ -459,7 +570,15 @@ export function PlayerPage() {
             )}
 
             <div className="flex items-center justify-center gap-6 mb-8">
-              <button onClick={handlePlayPause} disabled={(mode === 'single' && selectedFrequencyIds.length === 0) || (mode === 'sequence' && selectedSequenceIds.length === 0)} className="w-20 h-20 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+              <button 
+                onClick={handlePlayPause} 
+                disabled={
+                  (mode === 'single' && selectedFrequencyIds.length === 0) || 
+                  (mode === 'sequence' && selectedSequenceIds.length === 0) ||
+                  (mode === 'condition' && conditionFrequencies.length === 0)
+                } 
+                className="w-20 h-20 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 {isPlaying ? <Pause className="w-10 h-10 text-white" /> : <Play className="w-10 h-10 text-white ml-1" />}
               </button>
             </div>
