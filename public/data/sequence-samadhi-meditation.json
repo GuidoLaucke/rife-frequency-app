@@ -1,0 +1,53 @@
+{
+  "name": "Samadhi - Tiefste Meditation",
+  "description": "Der Weg zum Ego-Tod und absoluter Stille. Diese fortgeschrittene Sequenz führt durch Delta-Zustände bis zur tiefsten Trance. Nur für erfahrene Meditierende. Ermöglicht Erfahrungen von traumlosem Schlaf bei vollem Bewusstsein und körperloser Existenz.",
+  "color": "#FFFFFF",
+  "isPredefined": true,
+  "frequencies": [
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Erdung & Intention",
+      "color": "#8B4513",
+      "description": "Schumann Resonanz. Körperliche Entspannung. Geist beruhigen. Intention setzen."
+    },
+    {
+      "hz": 4.0,
+      "duration": 300,
+      "name": "Theta Einführung",
+      "color": "#000080",
+      "description": "Gateway Frequenz. Übergang von Wachbewusstsein. Gedanken loslassen."
+    },
+    {
+      "hz": 2.5,
+      "duration": 600,
+      "name": "Delta Vertiefung",
+      "color": "#000040",
+      "description": "Tiefe Heilung. Zellregeneration. Unbewusstes erforschen. Schwelle zu Samadhi."
+    },
+    {
+      "hz": 1.0,
+      "duration": 900,
+      "name": "Absolute Stille",
+      "color": "#000000",
+      "description": "Tiefste Trance. Ego-Tod. Traumloser Schlaf bei Bewusstsein. Körperlose Erfahrung. Samadhi."
+    },
+    {
+      "hz": 2.5,
+      "duration": 300,
+      "name": "Sanfter Aufstieg",
+      "color": "#000040",
+      "description": "Bewusstsein zurückholen. Erinnerungen integrieren. Delta verlassen."
+    },
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Erdung & Integration",
+      "color": "#8B4513",
+      "description": "Vollständige Rückkehr. Körperbewusstsein. Integration der Erfahrung. Erdung."
+    }
+  ],
+  "tags": ["samadhi", "meditation", "delta", "erleuchtung", "stille", "ego-tod"],
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

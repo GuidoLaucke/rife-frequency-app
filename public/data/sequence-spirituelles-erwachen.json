@@ -1,0 +1,46 @@
+{
+  "name": "Spirituelles Erwachen",
+  "description": "Eine transformative Reise durch die Ebenen des Bewusstseins - von der Erdung bis zur göttlichen Verbindung. Diese Sequenz führt dich sanft durch alle spirituellen Chakren und öffnet den Weg zur höheren Wahrnehmung.",
+  "color": "#9400D3",
+  "isPredefined": true,
+  "frequencies": [
+    {
+      "hz": 7.83,
+      "duration": 180,
+      "name": "Erdung - Schumann Resonanz",
+      "color": "#8B4513",
+      "description": "Verbindung zur Erde. Zentrierung. Vorbereitung für die spirituelle Reise."
+    },
+    {
+      "hz": 432,
+      "duration": 300,
+      "name": "Universelle Harmonie",
+      "color": "#FFD700",
+      "description": "Ausrichtung mit der universellen Frequenz. Herzöffnung. Harmonie mit der Natur."
+    },
+    {
+      "hz": 528,
+      "duration": 300,
+      "name": "Transformation & Liebe",
+      "color": "#00FF00",
+      "description": "Die Wunder-Frequenz. Herz-Chakra Aktivierung. DNA-Reparatur. Bedingungslose Liebe."
+    },
+    {
+      "hz": 852,
+      "duration": 240,
+      "name": "Intuition & Erwachen",
+      "color": "#4B0082",
+      "description": "Drittes Auge öffnen. Spirituelle Ordnung. Intuitive Wahrnehmung stärken."
+    },
+    {
+      "hz": 963,
+      "duration": 240,
+      "name": "Göttliche Verbindung",
+      "color": "#9400D3",
+      "description": "Crown Chakra. Einheit mit dem Universum. Höchste spirituelle Ebene. Erleuchtung."
+    }
+  ],
+  "tags": ["spirituell", "erwachen", "solfeggio", "chakra", "meditation", "transformation"],
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

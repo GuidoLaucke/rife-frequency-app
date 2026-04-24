@@ -1,0 +1,60 @@
+{
+  "name": "Kundalini Aufstieg",
+  "description": "Eine kraftvolle Reise durch alle sieben Hauptchakren. Diese Sequenz nutzt planetare Frequenzen um die Kundalini-Energie sanft vom Wurzel-Chakra bis zum Kronen-Chakra aufsteigen zu lassen. Ideal für Energie-Arbeit und spirituelle Transformation.",
+  "color": "#FF0000",
+  "isPredefined": true,
+  "frequencies": [
+    {
+      "hz": 194.18,
+      "duration": 420,
+      "name": "Muladhara - Root Chakra",
+      "color": "#FF0000",
+      "description": "Kundalini Erweckung. Basis-Energie. Erdung. Überlebenstrieb. Sicherheit."
+    },
+    {
+      "hz": 210.42,
+      "duration": 420,
+      "name": "Svadhisthana - Sacral Chakra",
+      "color": "#FF8800",
+      "description": "Kreative Energie. Sexuelle Kraft. Emotionale Balance. Lebensfreude."
+    },
+    {
+      "hz": 126.22,
+      "duration": 420,
+      "name": "Manipura - Solar Plexus",
+      "color": "#FFFF00",
+      "description": "Persönliche Kraft. Willensstärke. Transformation. Selbstbewusstsein."
+    },
+    {
+      "hz": 136.10,
+      "duration": 420,
+      "name": "Anahata - Heart Chakra",
+      "color": "#00FF00",
+      "description": "Bedingungslose Liebe. Heilung. Mitgefühl. Herzöffnung."
+    },
+    {
+      "hz": 141.27,
+      "duration": 420,
+      "name": "Vishuddha - Throat Chakra",
+      "color": "#00FFFF",
+      "description": "Ausdruck. Wahrheit. Kommunikation. Authentizität."
+    },
+    {
+      "hz": 221.23,
+      "duration": 420,
+      "name": "Ajna - Third Eye",
+      "color": "#4B0082",
+      "description": "Intuition. Hellsichtigkeit. Inneres Wissen. Spirituelle Vision."
+    },
+    {
+      "hz": 172.06,
+      "duration": 420,
+      "name": "Sahasrara - Crown Chakra",
+      "color": "#9400D3",
+      "description": "Göttliche Verbindung. Erleuchtung. Einheit. Höchstes Bewusstsein."
+    }
+  ],
+  "tags": ["kundalini", "chakra", "energie", "transformation", "spirituell", "aufstieg"],
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

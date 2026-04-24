@@ -1,0 +1,39 @@
+{
+  "name": "Merkaba Aktivierung",
+  "description": "Aktivierung des Licht-Körpers durch heilige Geometrie-Frequenzen. Diese Sequenz arbeitet mit den Frequenzen der platonischen Körper, Blume des Lebens und dem Sri Yantra. Ideal für Lichtkörper-Prozess und dimensionale Verschiebung. Erhöht die Schwingung.",
+  "color": "#FFD700",
+  "isPredefined": true,
+  "frequencies": [
+    {
+      "hz": 432,
+      "duration": 360,
+      "name": "Platonische Körper",
+      "color": "#FFD700",
+      "description": "Universelle Frequenz. Harmonische Proportion. Göttliche Geometrie. Basis-Struktur."
+    },
+    {
+      "hz": 528,
+      "duration": 360,
+      "name": "Blume des Lebens",
+      "color": "#00FF00",
+      "description": "Wunder-Frequenz. DNA-Geometrie. Schöpfungs-Muster. Transformation & Heilung."
+    },
+    {
+      "hz": 639,
+      "duration": 360,
+      "name": "Sri Yantra",
+      "color": "#00FFFF",
+      "description": "Verbindung & Einheit. Göttliche Proportion. Harmonische Beziehungen. Einheits-Feld."
+    },
+    {
+      "hz": 741,
+      "duration": 360,
+      "name": "Merkaba Rotation",
+      "color": "#9400D3",
+      "description": "Licht-Körper Aktivierung. Dimensionale Verschiebung. Merkaba-Spin. Aufstieg."
+    }
+  ],
+  "tags": ["merkaba", "lichtkörper", "geometrie", "aufstieg", "dimension", "aktivierung"],
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

@@ -1,0 +1,139 @@
+[
+  {
+    "name": "Angst & Stress Reduktion",
+    "categoryId": 2,
+    "color": "#87CEEB",
+    "tags": ["angst", "stress", "beruhigung", "entspannung", "panik", "nervosität"],
+    "description": "Beruhigt das überaktive Nervensystem und löst Angstzustände. Diese Sequenz kombiniert erdende und entspannende Frequenzen um Stress abzubauen, Panikattacken zu lindern und innere Ruhe wiederherzustellen. Ideal bei akuter Angst oder chronischem Stress.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 300 },
+      { "hz": 396, "duration": 420 },
+      { "hz": 528, "duration": 420 },
+      { "hz": 10, "duration": 360 },
+      { "hz": 7.83, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Depression & Stimmungsaufhellung",
+    "categoryId": 2,
+    "color": "#FFD700",
+    "tags": ["depression", "stimmung", "hoffnung", "lebensfreude", "antrieb", "energie"],
+    "description": "Hebt die Stimmung und aktiviert positive Energie. Diese Sequenz nutzt stimmungsaufhellende Frequenzen um aus depressiven Zuständen herauszukommen, Lebensfreude wiederzuentdecken und Selbstliebe zu stärken. Unterstützt bei leichten bis mittleren Depressionen.",
+    "frequencies": [
+      { "hz": 174, "duration": 300 },
+      { "hz": 10, "duration": 420 },
+      { "hz": 40, "duration": 360 },
+      { "hz": 528, "duration": 480 },
+      { "hz": 10, "duration": 240 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "ADHD - Fokus & Konzentration",
+    "categoryId": 2,
+    "color": "#FF6347",
+    "tags": ["adhd", "fokus", "konzentration", "aufmerksamkeit", "klarheit", "produktivität"],
+    "description": "Verbessert Fokus und Aufmerksamkeit bei ADHD. Diese Sequenz nutzt Beta- und Gamma-Frequenzen um Konzentration zu stärken, geistige Klarheit zu fördern und Ablenkungen zu reduzieren. Ideal vor Lern- oder Arbeitsphasen für bessere Produktivität.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 180 },
+      { "hz": 12, "duration": 420 },
+      { "hz": 14, "duration": 480 },
+      { "hz": 15, "duration": 420 },
+      { "hz": 40, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Schlafstörungen & Insomnia",
+    "categoryId": 2,
+    "color": "#191970",
+    "tags": ["schlaf", "insomnia", "schlaflosigkeit", "einschlafen", "durchschlafen", "ruhe"],
+    "description": "Fördert tiefen, erholsamen Schlaf. Diese Sequenz führt sanft in Delta-Zustände und aktiviert natürliche Schlaf-Mechanismen. Hilft beim Einschlafen, Durchschlafen und verbessert die Schlafqualität. Ideal 30-60 Minuten vor dem Schlafengehen.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 300 },
+      { "hz": 4, "duration": 360 },
+      { "hz": 2.5, "duration": 480 },
+      { "hz": 1.5, "duration": 600 },
+      { "hz": 0.5, "duration": 660 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "PTSD & Trauma-Heilung",
+    "categoryId": 2,
+    "color": "#9370DB",
+    "tags": ["ptsd", "trauma", "heilung", "sicherheit", "loslassen", "verarbeitung"],
+    "description": "Unterstützt bei Trauma-Verarbeitung und PTSD. Diese Sequenz kombiniert erdende Frequenzen mit Theta-Zuständen für sanfte Trauma-Integration. Löst festgehaltene Angst und Schuld, fördert emotionale Sicherheit und ermöglicht Loslassen. Mit Vorsicht bei schwerem PTSD.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 360 },
+      { "hz": 396, "duration": 420 },
+      { "hz": 417, "duration": 420 },
+      { "hz": 4, "duration": 480 },
+      { "hz": 528, "duration": 360 },
+      { "hz": 7.83, "duration": 360 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Burnout & Energie-Regeneration",
+    "categoryId": 2,
+    "color": "#32CD32",
+    "tags": ["burnout", "erschöpfung", "regeneration", "energie", "erholung", "kraft"],
+    "description": "Regeneriert bei Burnout und tiefer Erschöpfung. Diese Sequenz nutzt Delta-Frequenzen für zelluläre Erneuerung und Energie-Wiederherstellung. Ideal bei emotionaler und körperlicher Erschöpfung, chronischer Müdigkeit und nach intensiven Belastungsphasen.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 300 },
+      { "hz": 2, "duration": 600 },
+      { "hz": 528, "duration": 480 },
+      { "hz": 3, "duration": 480 },
+      { "hz": 7.83, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Emotionale Balance & Stabilität",
+    "categoryId": 2,
+    "color": "#FF69B4",
+    "tags": ["emotionen", "balance", "stabilität", "gleichgewicht", "harmonie", "gefühle"],
+    "description": "Bringt Emotionen ins Gleichgewicht. Diese Sequenz harmonisiert emotionale Extreme, fördert innere Stabilität und heilt emotionale Wunden. Hilft bei Stimmungsschwankungen, emotionaler Dysregulation und zwischenmenschlichen Konflikten. Öffnet das Herz-Chakra.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 240 },
+      { "hz": 639, "duration": 420 },
+      { "hz": 528, "duration": 480 },
+      { "hz": 10, "duration": 360 },
+      { "hz": 639, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Selbstwert & Innere Kraft",
+    "categoryId": 2,
+    "color": "#FFA500",
+    "tags": ["selbstwert", "selbstbewusstsein", "kraft", "vertrauen", "mut", "stärke"],
+    "description": "Stärkt Selbstwert und innere Kraft. Diese Sequenz aktiviert das Solar Plexus Chakra, fördert Selbstvertrauen und ermutigt zu authentischem Selbstausdruck. Ideal bei geringem Selbstwertgefühl, Unsicherheit oder wenn du deine persönliche Kraft zurückgewinnen möchtest.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 240 },
+      { "hz": 126.22, "duration": 480 },
+      { "hz": 528, "duration": 420 },
+      { "hz": 741, "duration": 420 },
+      { "hz": 126.22, "duration": 240 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  }
+]

@@ -1,0 +1,68 @@
+{
+  "name": "Gesund Abnehmen - Vollständig",
+  "categoryId": 1,
+  "color": "#32CD32",
+  "tags": ["abnehmen", "gewicht", "stoffwechsel", "fettverbrennung", "appetit", "motivation", "willenskraft", "gesundheit"],
+  "description": "Ganzheitliche Unterstützung für gesunde und nachhaltige Gewichtsreduktion. Diese umfassende 46-Minuten-Sequenz arbeitet auf allen Ebenen: Stoffwechsel-Aktivierung, Hormon-Balance, Appetit-Kontrolle, mentale Stärke, Umprogrammierung von Essgewohnheiten und positives Selbstbild. Kombiniere mit gesunder Ernährung und Bewegung für optimale Ergebnisse. WICHTIG: Frequenzen sind UNTERSTÜTZEND - kein Ersatz für gesunden Lifestyle.",
+  "frequencies": [
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Erdung & Hormon-Balance",
+      "color": "#8B4513",
+      "description": "Schumann Resonanz. Stress reduzieren. Cortisol senken. Hormonelles Gleichgewicht vorbereiten."
+    },
+    {
+      "hz": 295.8,
+      "duration": 480,
+      "name": "Stoffwechsel & Fettverbrennung",
+      "color": "#FF4500",
+      "description": "Lipid-Metabolismus aktivieren. Thermogenese steigern. Zell-Energieverbrauch erhöhen. Fettverbrennungs-Modus."
+    },
+    {
+      "hz": 10,
+      "duration": 360,
+      "name": "Appetit-Kontrolle",
+      "color": "#4169E1",
+      "description": "Alpha-Zustand. Sättigungsgefühl fördern. Heißhunger reduzieren. Stress-Essen stoppen. Bewusste Entscheidungen."
+    },
+    {
+      "hz": 126.22,
+      "duration": 420,
+      "name": "Willenskraft & Disziplin",
+      "color": "#FFA500",
+      "description": "Solar Plexus Chakra. Selbstdisziplin stärken. Durchhaltevermögen. Motivation. Persönliche Kraft."
+    },
+    {
+      "hz": 528,
+      "duration": 420,
+      "name": "Zelluläre Heilung & Stoffwechsel",
+      "color": "#00FF00",
+      "description": "Wunder-Frequenz. DNA-Reparatur. Stoffwechsel optimieren. Körper regenerieren. Selbstliebe."
+    },
+    {
+      "hz": 6,
+      "duration": 360,
+      "name": "Unterbewusstsein Umprogrammieren",
+      "color": "#9370DB",
+      "description": "Theta-Zustand. Essgewohnheiten umprogrammieren. Emotionales Essen auflösen. Neue gesunde Muster etablieren."
+    },
+    {
+      "hz": 741,
+      "duration": 300,
+      "name": "Positives Selbstbild",
+      "color": "#4B0082",
+      "description": "Selbstausdruck. Positives Körperbild. Akzeptanz & Veränderung. Authentizität. Innere Schönheit."
+    },
+    {
+      "hz": 7.83,
+      "duration": 120,
+      "name": "Integration & Abschluss",
+      "color": "#8B4513",
+      "description": "Verankerung der Intention. Zurück ins Gleichgewicht. Dankbarkeit für den Körper."
+    }
+  ],
+  "isPredefined": true,
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

@@ -1,0 +1,53 @@
+{
+  "name": "Astralreisen",
+  "description": "Eine sorgfältig konstruierte Sequenz für bewusste Out-of-Body Erfahrungen. Nutzt die Theta-Delta-Grenze um den Astralkörper vom physischen Körper zu lösen. Mit Erdung am Anfang und Ende für sichere Rückkehr. Für fortgeschrittene Praktizierende.",
+  "color": "#000080",
+  "isPredefined": true,
+  "frequencies": [
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Erdung & Vorbereitung",
+      "color": "#8B4513",
+      "description": "Schumann Resonanz. Körperliche Entspannung. Energetische Zentrierung. Intention setzen."
+    },
+    {
+      "hz": 6.3,
+      "duration": 600,
+      "name": "Astrale Schwelle",
+      "color": "#4B0082",
+      "description": "Monroe-Institut Frequenz. Körper-Geist Trennung vorbereiten. Klarheit im Astralen."
+    },
+    {
+      "hz": 5.5,
+      "duration": 600,
+      "name": "Astrale Projektion",
+      "color": "#000080",
+      "description": "Theta-Mitte. Optimale Frequenz für bewusste Astralreisen. Luzides Träumen. Spirituelle Visionen."
+    },
+    {
+      "hz": 4.0,
+      "duration": 600,
+      "name": "Gateway Frequenz",
+      "color": "#000040",
+      "description": "Übergang zum Astralkörper. Tiefste Meditation. Bewusstseinserweiterung. Völlige Loslösung."
+    },
+    {
+      "hz": 5.5,
+      "duration": 300,
+      "name": "Sanfter Aufstieg",
+      "color": "#000080",
+      "description": "Rückkehr vorbereiten. Erinnerungen sammeln. Bewusstsein zurückholen."
+    },
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Erdung & Rückkehr",
+      "color": "#8B4513",
+      "description": "Vollständige Rückkehr in den Körper. Integration. Erdung. Dankbarkeit."
+    }
+  ],
+  "tags": ["astral", "out-of-body", "theta", "projektion", "bewusstsein", "reise"],
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

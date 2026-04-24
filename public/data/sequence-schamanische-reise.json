@@ -1,0 +1,32 @@
+{
+  "name": "Schamanische Reise",
+  "description": "Eine traditionelle schamanische Trommel-Frequenz Reise. Beginnt mit Erdung in der Mittelwelt, taucht tief in den Theta-Zustand für Visionen und Krafttier-Begegnungen, und kehrt sanft zurück. Ideal für spirituelle Erkundung und Ahnen-Verbindung.",
+  "color": "#8B4513",
+  "isPredefined": true,
+  "frequencies": [
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Erdung & Intention",
+      "color": "#8B4513",
+      "description": "Schumann Resonanz. Verbindung zur Erde. Mittelwelt. Intention setzen für die Reise."
+    },
+    {
+      "hz": 4.5,
+      "duration": 1200,
+      "name": "Schamanische Reise - Unterwelt",
+      "color": "#000080",
+      "description": "Tiefer Theta-Zustand. Krafttier-Begegnung. Ahnen-Verbindung. Spirituelle Visionen. Heilungs-Arbeit."
+    },
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Rückkehr & Integration",
+      "color": "#8B4513",
+      "description": "Sanfte Rückkehr zur Erde. Integration der Erfahrungen. Dankbarkeit. Erdung."
+    }
+  ],
+  "tags": ["schamanisch", "reise", "theta", "krafttier", "ahnen", "vision"],
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

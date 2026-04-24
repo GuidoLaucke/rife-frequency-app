@@ -1,0 +1,53 @@
+{
+  "name": "Psi-Fähigkeiten Training",
+  "description": "Entwicklung und Stärkung übersinnlicher Fähigkeiten. Diese Sequenz trainiert systematisch Telepathie, Fernwahrnehmung, Hellsehen und psychokinetische Fähigkeiten. Ideal für regelmäßiges Training zur Entwicklung von ESP und mentalen Kräften.",
+  "color": "#4B0082",
+  "isPredefined": true,
+  "frequencies": [
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Erdung & Zentrierung",
+      "color": "#8B4513",
+      "description": "Schumann Resonanz. Mentale Klarheit. Fokus vorbereiten. Energetische Ausrichtung."
+    },
+    {
+      "hz": 7.5,
+      "duration": 300,
+      "name": "Telepathie",
+      "color": "#FF00FF",
+      "description": "Gedankenübertragung. Mentale Verbindung. Empathische Resonanz. Geist zu Geist."
+    },
+    {
+      "hz": 6.5,
+      "duration": 300,
+      "name": "Fernwahrnehmung",
+      "color": "#00FFFF",
+      "description": "Remote Viewing. Astrale Sicht. Räumliche Wahrnehmung über Distanz. Hellsichtigkeit."
+    },
+    {
+      "hz": 8.0,
+      "duration": 300,
+      "name": "Präkognition",
+      "color": "#FFD700",
+      "description": "Zukunfts-Visionen. Hellsehen. Temporale Wahrnehmung. Intuitive Vorahnung."
+    },
+    {
+      "hz": 14.0,
+      "duration": 300,
+      "name": "Psychokinese",
+      "color": "#FF0000",
+      "description": "Mentale Beeinflussung. Energie-Manipulation. Geist über Materie. Willenskraft."
+    },
+    {
+      "hz": 7.83,
+      "duration": 300,
+      "name": "Integration & Erdung",
+      "color": "#8B4513",
+      "description": "Erfahrungen integrieren. Energie ausgleichen. Erdung. Abschluss."
+    }
+  ],
+  "tags": ["psi", "telepathie", "hellsehen", "esp", "psychokinese", "training"],
+  "createdAt": "2025-04-24T00:00:00.000Z",
+  "updatedAt": "2025-04-24T00:00:00.000Z"
+}

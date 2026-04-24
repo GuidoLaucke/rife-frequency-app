@@ -1,0 +1,123 @@
+[
+  {
+    "name": "Spirituelles Erwachen",
+    "categoryId": 3,
+    "color": "#9400D3",
+    "tags": ["spirituell", "erwachen", "solfeggio", "chakra", "meditation", "transformation"],
+    "description": "Eine transformative Reise durch die Ebenen des Bewusstseins - von der Erdung bis zur göttlichen Verbindung. Diese Sequenz führt dich sanft durch alle spirituellen Chakren und öffnet den Weg zur höheren Wahrnehmung.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 180 },
+      { "hz": 432, "duration": 300 },
+      { "hz": 528, "duration": 300 },
+      { "hz": 852, "duration": 240 },
+      { "hz": 963, "duration": 240 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Kundalini Aufstieg",
+    "categoryId": 3,
+    "color": "#FF0000",
+    "tags": ["kundalini", "chakra", "energie", "transformation", "spirituell", "aufstieg"],
+    "description": "Eine kraftvolle Reise durch alle sieben Hauptchakren. Diese Sequenz nutzt planetare Frequenzen um die Kundalini-Energie sanft vom Wurzel-Chakra bis zum Kronen-Chakra aufsteigen zu lassen. Ideal für Energie-Arbeit und spirituelle Transformation.",
+    "frequencies": [
+      { "hz": 194.18, "duration": 420 },
+      { "hz": 210.42, "duration": 420 },
+      { "hz": 126.22, "duration": 420 },
+      { "hz": 136.10, "duration": 420 },
+      { "hz": 141.27, "duration": 420 },
+      { "hz": 221.23, "duration": 420 },
+      { "hz": 172.06, "duration": 420 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Schamanische Reise",
+    "categoryId": 3,
+    "color": "#8B4513",
+    "tags": ["schamanisch", "reise", "theta", "krafttier", "ahnen", "vision"],
+    "description": "Eine traditionelle schamanische Trommel-Frequenz Reise. Beginnt mit Erdung in der Mittelwelt, taucht tief in den Theta-Zustand für Visionen und Krafttier-Begegnungen, und kehrt sanft zurück. Ideal für spirituelle Erkundung und Ahnen-Verbindung.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 300 },
+      { "hz": 4.5, "duration": 1200 },
+      { "hz": 7.83, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Astralreisen",
+    "categoryId": 3,
+    "color": "#000080",
+    "tags": ["astral", "out-of-body", "theta", "projektion", "bewusstsein", "reise"],
+    "description": "Eine sorgfältig konstruierte Sequenz für bewusste Out-of-Body Erfahrungen. Nutzt die Theta-Delta-Grenze um den Astralkörper vom physischen Körper zu lösen. Mit Erdung am Anfang und Ende für sichere Rückkehr. Für fortgeschrittene Praktizierende.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 300 },
+      { "hz": 6.3, "duration": 600 },
+      { "hz": 5.5, "duration": 600 },
+      { "hz": 4.0, "duration": 600 },
+      { "hz": 5.5, "duration": 300 },
+      { "hz": 7.83, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Samadhi - Tiefste Meditation",
+    "categoryId": 3,
+    "color": "#FFFFFF",
+    "tags": ["samadhi", "meditation", "delta", "erleuchtung", "stille", "ego-tod"],
+    "description": "Der Weg zum Ego-Tod und absoluter Stille. Diese fortgeschrittene Sequenz führt durch Delta-Zustände bis zur tiefsten Trance. Nur für erfahrene Meditierende. Ermöglicht Erfahrungen von traumlosem Schlaf bei vollem Bewusstsein und körperloser Existenz.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 300 },
+      { "hz": 4.0, "duration": 300 },
+      { "hz": 2.5, "duration": 600 },
+      { "hz": 1.0, "duration": 900 },
+      { "hz": 2.5, "duration": 300 },
+      { "hz": 7.83, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Merkaba Aktivierung",
+    "categoryId": 3,
+    "color": "#FFD700",
+    "tags": ["merkaba", "lichtkörper", "geometrie", "aufstieg", "dimension", "aktivierung"],
+    "description": "Aktivierung des Licht-Körpers durch heilige Geometrie-Frequenzen. Diese Sequenz arbeitet mit den Frequenzen der platonischen Körper, Blume des Lebens und dem Sri Yantra. Ideal für Lichtkörper-Prozess und dimensionale Verschiebung. Erhöht die Schwingung.",
+    "frequencies": [
+      { "hz": 432, "duration": 360 },
+      { "hz": 528, "duration": 360 },
+      { "hz": 639, "duration": 360 },
+      { "hz": 741, "duration": 360 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  },
+  {
+    "name": "Psi-Fähigkeiten Training",
+    "categoryId": 3,
+    "color": "#4B0082",
+    "tags": ["psi", "telepathie", "hellsehen", "esp", "psychokinese", "training"],
+    "description": "Entwicklung und Stärkung übersinnlicher Fähigkeiten. Diese Sequenz trainiert systematisch Telepathie, Fernwahrnehmung, Hellsehen und psychokinetische Fähigkeiten. Ideal für regelmäßiges Training zur Entwicklung von ESP und mentalen Kräften.",
+    "frequencies": [
+      { "hz": 7.83, "duration": 300 },
+      { "hz": 7.5, "duration": 300 },
+      { "hz": 6.5, "duration": 300 },
+      { "hz": 8.0, "duration": 300 },
+      { "hz": 14.0, "duration": 300 },
+      { "hz": 7.83, "duration": 300 }
+    ],
+    "isPredefined": true,
+    "createdAt": "2025-04-24T00:00:00.000Z",
+    "updatedAt": "2025-04-24T00:00:00.000Z"
+  }
+]
