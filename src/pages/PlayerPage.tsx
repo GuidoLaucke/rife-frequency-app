@@ -400,7 +400,7 @@ export function PlayerPage() {
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar />
-      <main className="flex-1 p-4 md:p-8 md:ml-64">
+      <main className="flex-1 p-4 pt-20 md:p-8 md:ml-64">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-2">Player</h1>
