@@ -1,15 +1,17 @@
 /**
- * PlayerPage v2.3 - With Condition Support
- * File: PlayerPage-v2.3-condition-support-20250424.tsx
+ * PlayerPage v2.5 - With Search, Sort & Range Filters
+ * File: PlayerPage-v2.5-with-filters-20250424.tsx
  * Date: 2025-04-24
  * 
- * CHANGES v2.3:
- * - Added: Condition support via location.state
- * - Added: Auto-load condition frequencies from ConditionsPage
- * - Added: Display condition name when playing from condition
- * - Added: Condition mode (plays frequencies from condition directly)
+ * CHANGES v2.5:
+ * - Added: Frequency range filters (0-10, 10-100, 100-1000, 1000+)
+ * - Added: Sorting options (Hz asc/desc, Name A-Z/Z-A)
+ * - Added: Results counter
+ * - Enhanced: Combined filter logic (search + range + sort)
  * 
  * PREVIOUS CHANGES:
+ * v2.4: Search fields for frequencies & sequences
+ * v2.3: Condition support via location.state
  * v2.2: Create buttons for Person/Frequency/Sequence
  * v2.1: Wave visualization with 4 waveform types
  * v2.0: Person filtering working
@@ -32,7 +34,7 @@ import {
   type Sequence, 
   type Person 
 } from '@/lib/db';
-import { Play, Pause, Volume2, Users, Radio, ListOrdered, Plus, Activity } from 'lucide-react';
+import { Play, Pause, Volume2, Users, Radio, ListOrdered, Plus, Activity, Search, X, ArrowUpDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 
@@ -41,6 +43,10 @@ interface ConditionFrequency {
   hz: number;
   duration: number;
 }
+
+// NEW v2.5: Filter types
+type SortOption = 'hz-asc' | 'hz-desc' | 'name-asc' | 'name-desc';
+type FrequencyRange = 'all' | '0-10' | '10-100' | '100-1000' | '1000+';
 
 export function PlayerPage() {
   const { t } = useTranslation();
@@ -66,6 +72,13 @@ export function PlayerPage() {
 
   const [selectedFrequencyIds, setSelectedFrequencyIds] = useState<number[]>([]);
   const [selectedSequenceIds, setSelectedSequenceIds] = useState<number[]>([]);
+
+  // NEW v2.4: Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // NEW v2.5: Sort & Range state
+  const [sortOption, setSortOption] = useState<SortOption>('hz-asc');
+  const [selectedRange, setSelectedRange] = useState<FrequencyRange>('all');
 
   // NEW: Condition state
   const [conditionId, setConditionId] = useState<number | null>(null);
@@ -489,8 +502,193 @@ export function PlayerPage() {
                   Neue Frequenz
                 </button>
               </div>
+              
+              {/* NEW v2.4: Search field for frequencies */}
+              <div className="mb-4 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Suche Frequenzen..."
+                  className="w-full bg-black/20 border border-white/10 focus:border-primary/50 rounded-lg h-11 pl-10 pr-10 text-white placeholder:text-muted-foreground"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-white"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+              
+              {/* NEW v2.5: Filters & Sort */}
+              <div className="backdrop-blur-md bg-white/5 border border-white/5 rounded-xl p-4 mb-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Frequency Range Filter */}
+                  <div>
+                    <h3 className="text-sm font-medium text-white mb-2">Frequenzbereich</h3>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => setSelectedRange('all')}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          selectedRange === 'all'
+                            ? 'bg-primary text-white'
+                            : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                        }`}
+                      >
+                        Alle
+                      </button>
+                      <button
+                        onClick={() => setSelectedRange('0-10')}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          selectedRange === '0-10'
+                            ? 'bg-primary text-white'
+                            : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                        }`}
+                      >
+                        0-10 Hz
+                      </button>
+                      <button
+                        onClick={() => setSelectedRange('10-100')}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          selectedRange === '10-100'
+                            ? 'bg-primary text-white'
+                            : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                        }`}
+                      >
+                        10-100 Hz
+                      </button>
+                      <button
+                        onClick={() => setSelectedRange('100-1000')}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          selectedRange === '100-1000'
+                            ? 'bg-primary text-white'
+                            : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                        }`}
+                      >
+                        100-1000 Hz
+                      </button>
+                      <button
+                        onClick={() => setSelectedRange('1000+')}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          selectedRange === '1000+'
+                            ? 'bg-primary text-white'
+                            : 'bg-white/5 text-muted-foreground hover:bg-white/10'
+                        }`}
+                      >
+                        1000+ Hz
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Sort Options */}
+                  <div>
+                    <h3 className="text-sm font-medium text-white mb-2 flex items-center gap-2">
+                      <ArrowUpDown className="w-4 h-4" />
+                      <span>Sortierung</span>
+                    </h3>
+                    <select
+                      value={sortOption}
+                      onChange={(e) => setSortOption(e.target.value as SortOption)}
+                      className="w-full bg-black/20 border border-white/10 focus:border-primary/50 rounded-lg h-10 px-3 text-white text-sm"
+                    >
+                      <option value="hz-asc">Hz aufsteigend (niedrig → hoch)</option>
+                      <option value="hz-desc">Hz absteigend (hoch → niedrig)</option>
+                      <option value="name-asc">Name A → Z</option>
+                      <option value="name-desc">Name Z → A</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Results Counter */}
+              {(() => {
+                const filtered = displayFrequencies
+                  .filter(freq => {
+                    // Range filter
+                    if (selectedRange !== 'all') {
+                      const hz = freq.hz;
+                      switch (selectedRange) {
+                        case '0-10':
+                          if (hz > 10) return false;
+                          break;
+                        case '10-100':
+                          if (hz < 10 || hz > 100) return false;
+                          break;
+                        case '100-1000':
+                          if (hz < 100 || hz > 1000) return false;
+                          break;
+                        case '1000+':
+                          if (hz < 1000) return false;
+                          break;
+                      }
+                    }
+                    
+                    // Search filter
+                    if (!searchQuery.trim()) return true;
+                    const query = searchQuery.toLowerCase();
+                    return (
+                      freq.name.toLowerCase().includes(query) ||
+                      String(freq.hz).includes(query) ||
+                      freq.description?.toLowerCase().includes(query)
+                    );
+                  });
+                
+                return (
+                  <div className="mb-4 text-muted-foreground text-sm">
+                    {filtered.length} {filtered.length === 1 ? 'Frequenz' : 'Frequenzen'} gefunden
+                  </div>
+                );
+              })()}
+              
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                {displayFrequencies.map(freq => (
+                {displayFrequencies
+                  .filter(freq => {
+                    // Range filter
+                    if (selectedRange !== 'all') {
+                      const hz = freq.hz;
+                      switch (selectedRange) {
+                        case '0-10':
+                          if (hz > 10) return false;
+                          break;
+                        case '10-100':
+                          if (hz < 10 || hz > 100) return false;
+                          break;
+                        case '100-1000':
+                          if (hz < 100 || hz > 1000) return false;
+                          break;
+                        case '1000+':
+                          if (hz < 1000) return false;
+                          break;
+                      }
+                    }
+                    
+                    // Search filter
+                    if (!searchQuery.trim()) return true;
+                    const query = searchQuery.toLowerCase();
+                    return (
+                      freq.name.toLowerCase().includes(query) ||
+                      String(freq.hz).includes(query) ||
+                      freq.description?.toLowerCase().includes(query)
+                    );
+                  })
+                  .sort((a, b) => {
+                    switch (sortOption) {
+                      case 'hz-asc':
+                        return a.hz - b.hz;
+                      case 'hz-desc':
+                        return b.hz - a.hz;
+                      case 'name-asc':
+                        return a.name.localeCompare(b.name);
+                      case 'name-desc':
+                        return b.name.localeCompare(a.name);
+                      default:
+                        return 0;
+                    }
+                  })
+                  .map(freq => (
                   <label key={freq.id} className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-all ${selectedFrequencyIds.includes(freq.id!) ? 'bg-primary/20 border-2 border-primary' : 'bg-white/5 hover:bg-white/10 border-2 border-transparent'}`}>
                     <input type="checkbox" checked={selectedFrequencyIds.includes(freq.id!)} onChange={() => handleToggleFrequency(freq.id!)} className="w-5 h-5" />
                     <div className="w-6 h-6 rounded-full flex-shrink-0" style={{ backgroundColor: freq.color }} />
@@ -500,7 +698,35 @@ export function PlayerPage() {
                     </div>
                   </label>
                 ))}
-                {displayFrequencies.length === 0 && <p className="text-muted-foreground col-span-full text-center py-8">{selectedPerson ? 'Dieser Person sind noch keine Frequenzen zugeordnet' : 'Keine Frequenzen verfügbar'}</p>}
+                {displayFrequencies.filter(freq => {
+                  // Range filter
+                  if (selectedRange !== 'all') {
+                    const hz = freq.hz;
+                    switch (selectedRange) {
+                      case '0-10':
+                        if (hz > 10) return false;
+                        break;
+                      case '10-100':
+                        if (hz < 10 || hz > 100) return false;
+                        break;
+                      case '100-1000':
+                        if (hz < 100 || hz > 1000) return false;
+                        break;
+                      case '1000+':
+                        if (hz < 1000) return false;
+                        break;
+                    }
+                  }
+                  
+                  // Search filter
+                  if (!searchQuery.trim()) return true;
+                  const query = searchQuery.toLowerCase();
+                  return (
+                    freq.name.toLowerCase().includes(query) ||
+                    String(freq.hz).includes(query) ||
+                    freq.description?.toLowerCase().includes(query)
+                  );
+                }).length === 0 && <p className="text-muted-foreground col-span-full text-center py-8">{searchQuery || selectedRange !== 'all' ? 'Keine Frequenzen gefunden' : selectedPerson ? 'Dieser Person sind noch keine Frequenzen zugeordnet' : 'Keine Frequenzen verfügbar'}</p>}
               </div>
             </div>
           )}
@@ -520,8 +746,35 @@ export function PlayerPage() {
                   Neue Sequenz
                 </button>
               </div>
+              
+              {/* NEW v2.4: Search field for sequences */}
+              <div className="mb-4 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Suche Sequenzen..."
+                  className="w-full bg-black/20 border border-white/10 focus:border-primary/50 rounded-lg h-11 pl-10 pr-10 text-white placeholder:text-muted-foreground"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-white"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+              
               <div className="grid gap-3 md:grid-cols-2">
-                {displaySequences.map(seq => (
+                {displaySequences
+                  .filter(seq => {
+                    if (!searchQuery.trim()) return true;
+                    const query = searchQuery.toLowerCase();
+                    return seq.name.toLowerCase().includes(query);
+                  })
+                  .map(seq => (
                   <label key={seq.id} className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-all ${selectedSequenceIds.includes(seq.id!) ? 'bg-primary/20 border-2 border-primary' : 'bg-white/5 hover:bg-white/10 border-2 border-transparent'}`}>
                     <input type="checkbox" checked={selectedSequenceIds.includes(seq.id!)} onChange={() => handleToggleSequence(seq.id!)} className="w-5 h-5" />
                     <div className="flex-1">
@@ -530,7 +783,11 @@ export function PlayerPage() {
                     </div>
                   </label>
                 ))}
-                {displaySequences.length === 0 && <p className="text-muted-foreground col-span-full text-center py-8">{selectedPerson ? 'Dieser Person sind noch keine Sequenzen zugeordnet' : 'Keine Sequenzen verfügbar'}</p>}
+                {displaySequences.filter(seq => {
+                  if (!searchQuery.trim()) return true;
+                  const query = searchQuery.toLowerCase();
+                  return seq.name.toLowerCase().includes(query);
+                }).length === 0 && <p className="text-muted-foreground col-span-full text-center py-8">{searchQuery ? 'Keine Sequenzen gefunden' : selectedPerson ? 'Dieser Person sind noch keine Sequenzen zugeordnet' : 'Keine Sequenzen verfügbar'}</p>}
               </div>
             </div>
           )}
