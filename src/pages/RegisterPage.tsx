@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { toast } from 'sonner';
+import { Key } from 'lucide-react';
 
 export function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -26,14 +28,19 @@ export function RegisterPage() {
     }
 
     setIsLoading(true);
-    const success = await register(email, password, name);
-    setIsLoading(false);
-
-    if (success) {
-      toast.success('Account created successfully!');
-      navigate('/dashboard');
-    } else {
-      toast.error('Email already exists');
+    
+    try {
+      // FIXED: Correct parameter order (name, email, password, inviteCode)
+      const user = await register(name, email, password, inviteCode || undefined);
+      
+      if (user) {
+        toast.success('Account created successfully!');
+        navigate('/dashboard');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Registration failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -122,6 +129,25 @@ export function RegisterPage() {
                 className="w-full bg-black/20 border-white/10 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 rounded-lg h-11 px-4 text-white placeholder:text-white/20 transition-all"
                 placeholder="••••••••"
               />
+            </div>
+
+            {/* NEW: Invite Code Field */}
+            <div>
+              <label htmlFor="inviteCode" className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                <Key className="w-4 h-4 text-primary" />
+                Invite Code <span className="text-muted-foreground text-xs">(optional)</span>
+              </label>
+              <input
+                id="inviteCode"
+                type="text"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                className="w-full bg-black/20 border-white/10 focus:border-primary/50 focus:ring-1 focus:ring-primary/50 rounded-lg h-11 px-4 text-white placeholder:text-white/20 transition-all font-mono"
+                placeholder="LORENZ2025"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Enter your invite code to unlock premium features
+              </p>
             </div>
 
             <button

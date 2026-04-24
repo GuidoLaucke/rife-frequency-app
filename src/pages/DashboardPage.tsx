@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
-import { getFrequencies, getConditions, getPersons, getSequences } from '@/lib/db';
+import { getFrequencies, getConditions, getPersons, getSequences, type Frequency } from '@/lib/db';
 import { Waves, FileText, Users, ListOrdered, Play } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,10 +21,10 @@ export function DashboardPage() {
 
   const loadData = async () => {
     const [frequencies, conditions, persons, sequences] = await Promise.all([
-      db.getAll('frequencies'),
-      db.getAll('conditions'),
-      db.getAll('persons'),
-      db.getAll('sequences'),
+      getFrequencies(),  // ← FIXED
+      getConditions(),   // ← FIXED
+      getPersons(),      // ← FIXED
+      getSequences(),    // ← FIXED
     ]);
 
     setStats({
@@ -122,7 +122,7 @@ export function DashboardPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-mono font-bold text-accent">{freq.hz} Hz</p>
-                    {freq.is_predefined && (
+                    {freq.isPredefined && (
                       <span className="text-xs text-muted-foreground">{t('dashboard.predefined')}</span>
                     )}
                   </div>

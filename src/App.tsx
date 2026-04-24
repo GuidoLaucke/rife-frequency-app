@@ -12,7 +12,7 @@ import { ConditionsPage } from './pages/ConditionsPage';
 import { PersonsPage } from './pages/PersonsPage';
 import { SequencesPage } from './pages/SequencesPage';
 import { ImportPage } from './pages/ImportPage';
-import { AdminPage } from './pages/AdminPage';
+import AdminPage from './pages/AdminPage';  // ← FIXED: Removed { } for default export
 import { HelpPage } from './pages/HelpPage';
 import { AboutPage } from './pages/AboutPage';
 

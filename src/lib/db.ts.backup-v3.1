@@ -1,21 +1,7 @@
 /**
- * ALCHEWAT Pulse - Database Layer v3.2
- * File: db-v3.2-MINIMAL-SAFE-20250424.ts
+ * ALCHEWAT Pulse - Database Layer v3.1
+ * File: db-v3.1-infinite-loop-fix-20250424.ts
  * Date: 2025-04-24
- * 
- * CHANGES v3.2:
- * - Added InviteCode store for premium access control
- * - Extended User interface with isAdmin?, hasPremium?, inviteCode? (OPTIONAL - backward compatible)
- * - Added migration v3 → v4 for existing users
- * - Auto-admin for guido.laucke@gmail.com
- * - Added InviteCode CRUD functions
- * - DB_VERSION = 4
- * 
- * BACKWARD COMPATIBILITY:
- * - All existing functions unchanged
- * - All existing stores unchanged
- * - New User fields are optional (won't break existing data)
- * - Migration runs automatically and safely
  * 
  * CHANGES v3.1:
  * - CRITICAL FIX: Infinite loop bug (Maximum call stack exceeded)
@@ -30,16 +16,21 @@
  * DEPENDENCIES:
  * - idb ^7.0.0
  * 
- * INSTALL:
- * cp ~/Downloads/db-v3.2-MINIMAL-SAFE-20250424.ts src/lib/db.ts
- * rm -rf node_modules/.vite
- * npm run dev
+ * Changelog v3.1:
+ * - Added Category CRUD functions (create, update, delete)
+ * 
+ * Changelog v3.0:
+ * - Added conditionFrequencies store
+ * - Added conditionSequences store  
+ * - Added bidirectional assignment functions
+ * - Added CONDITIONS CRUD functions
+ * - DB_VERSION = 3
  */
 
 import { openDB as idbOpenDB, IDBPDatabase } from 'idb';
 
 const DB_NAME = 'alchewat-pulse-db';
-const DB_VERSION = 4; // ← CHANGED from 3
+const DB_VERSION = 3;
 
 // ========================================
 // INTERFACES
@@ -50,22 +41,7 @@ export interface User {
   email: string;
   password: string;
   name: string;
-  isAdmin?: boolean;      // ← NEW v3.2 (optional for backward compatibility)
-  hasPremium?: boolean;   // ← NEW v3.2 (optional for backward compatibility)
-  inviteCode?: string;    // ← NEW v3.2 (optional for backward compatibility)
   createdAt: Date;
-}
-
-// ← NEW v3.2
-export interface InviteCode {
-  id?: number;
-  code: string;
-  hasPremium: boolean;
-  maxUses: number;
-  currentUses: number;
-  usedBy: string[];      // Array of user emails who used this code
-  createdAt: Date;
-  expiresAt?: Date;
 }
 
 export interface Frequency {
@@ -156,7 +132,6 @@ export interface ConditionSequence {
 
 interface AlchewatDB {
   users: User;
-  inviteCodes: InviteCode;  // ← NEW v3.2
   frequencies: Frequency;
   conditions: Condition;
   categories: Category;
@@ -179,7 +154,7 @@ export async function openDB(): Promise<IDBPDatabase<AlchewatDB>> {
   if (dbInstance) return dbInstance;
 
   dbInstance = await idbOpenDB<AlchewatDB>(DB_NAME, DB_VERSION, {
-    upgrade(db, oldVersion, newVersion, transaction) {
+    upgrade(db, oldVersion) {
       console.log(`Upgrading database from version ${oldVersion} to ${DB_VERSION}`);
 
       // Version 1: Initial stores
@@ -246,62 +221,6 @@ export async function openDB(): Promise<IDBPDatabase<AlchewatDB>> {
           csStore.createIndex('sequenceId', 'sequenceId', { unique: false });
         }
       }
-
-      // ═══════════════════════════════════════════════════════════
-      // Version 4: Invite codes & premium system (NEW v3.2)
-      // ═══════════════════════════════════════════════════════════
-      if (oldVersion < 4) {
-        console.log('Adding invite codes & premium support (v3 → v4)');
-        
-        // 1. Create InviteCode store
-        if (!db.objectStoreNames.contains('inviteCodes')) {
-          const inviteStore = db.createObjectStore('inviteCodes', { 
-            keyPath: 'id', 
-            autoIncrement: true 
-          });
-          inviteStore.createIndex('code', 'code', { unique: true });
-          console.log('✅ InviteCode store created');
-        }
-        
-        // 2. Migrate existing users
-        const userStore = transaction.objectStore('users');
-        let migratedCount = 0;
-        
-        userStore.openCursor().then(function migrateUsers(cursor) {
-          if (!cursor) {
-            console.log(`✅ Migrated ${migratedCount} users to v4`);
-            return;
-          }
-          
-          const user = cursor.value;
-          let updated = false;
-          
-          // Add isAdmin (auto-admin for guido.laucke@gmail.com)
-          if (!('isAdmin' in user)) {
-            user.isAdmin = user.email.toLowerCase() === 'guido.laucke@gmail.com';
-            updated = true;
-          }
-          
-          // Add hasPremium (default false)
-          if (!('hasPremium' in user)) {
-            user.hasPremium = false;
-            updated = true;
-          }
-          
-          // Add inviteCode (default undefined)
-          if (!('inviteCode' in user)) {
-            user.inviteCode = undefined;
-            updated = true;
-          }
-          
-          if (updated) {
-            cursor.update(user);
-            migratedCount++;
-          }
-          
-          return cursor.continue().then(migrateUsers);
-        });
-      }
     },
   });
 
@@ -349,7 +268,7 @@ async function initializeDefaultData() {
 }
 
 // ========================================
-// USER FUNCTIONS (UNCHANGED from v3.1)
+// USER FUNCTIONS
 // ========================================
 
 export async function createUser(user: Omit<User, 'id'>): Promise<number> {
@@ -364,75 +283,7 @@ export async function getUserByEmail(email: string): Promise<User | undefined> {
 }
 
 // ========================================
-// INVITE CODE FUNCTIONS (NEW v3.2)
-// ========================================
-
-export async function createInviteCode(code: Omit<InviteCode, 'id' | 'createdAt' | 'currentUses' | 'usedBy'>): Promise<InviteCode> {
-  const db = await openDB();
-  const newCode: InviteCode = {
-    ...code,
-    currentUses: 0,
-    usedBy: [],
-    createdAt: new Date(),
-  };
-  const id = await db.add('inviteCodes', newCode);
-  return { ...newCode, id };
-}
-
-export async function getInviteCodeByCode(code: string): Promise<InviteCode | undefined> {
-  const db = await openDB();
-  const tx = db.transaction('inviteCodes', 'readonly');
-  const index = tx.store.index('code');
-  return index.get(code);
-}
-
-export async function getAllInviteCodes(): Promise<InviteCode[]> {
-  const db = await openDB();
-  return db.getAll('inviteCodes');
-}
-
-export async function updateInviteCode(code: InviteCode): Promise<void> {
-  const db = await openDB();
-  await db.put('inviteCodes', code);
-}
-
-export async function deleteInviteCode(id: number): Promise<void> {
-  const db = await openDB();
-  await db.delete('inviteCodes', id);
-}
-
-export async function useInviteCode(code: string, userEmail: string): Promise<InviteCode | null> {
-  const inviteCode = await getInviteCodeByCode(code);
-  
-  if (!inviteCode) {
-    return null;
-  }
-  
-  // Check if expired
-  if (inviteCode.expiresAt && new Date() > inviteCode.expiresAt) {
-    return null;
-  }
-  
-  // Check if max uses reached
-  if (inviteCode.currentUses >= inviteCode.maxUses) {
-    return null;
-  }
-  
-  // Check if user already used this code
-  if (inviteCode.usedBy.includes(userEmail)) {
-    return inviteCode; // Already used, return existing
-  }
-  
-  // Update usage
-  inviteCode.currentUses++;
-  inviteCode.usedBy.push(userEmail);
-  await updateInviteCode(inviteCode);
-  
-  return inviteCode;
-}
-
-// ========================================
-// FREQUENCY FUNCTIONS (UNCHANGED from v3.1)
+// FREQUENCY FUNCTIONS
 // ========================================
 
 export async function getFrequencies(): Promise<Frequency[]> {
@@ -464,7 +315,7 @@ export async function deleteFrequency(id: number): Promise<void> {
 }
 
 // ========================================
-// CONDITIONS CRUD (UNCHANGED from v3.1)
+// CONDITIONS CRUD
 // ========================================
 
 export async function getConditions(): Promise<Condition[]> {
@@ -491,7 +342,7 @@ export async function deleteCondition(id: number): Promise<void> {
 }
 
 // ========================================
-// CATEGORY FUNCTIONS (UNCHANGED from v3.1)
+// CATEGORY FUNCTIONS
 // ========================================
 
 export async function getCategories(): Promise<Category[]> {
@@ -526,7 +377,7 @@ export async function deleteCategory(id: number): Promise<void> {
 }
 
 // ========================================
-// PERSON FUNCTIONS (UNCHANGED from v3.1)
+// PERSON FUNCTIONS
 // ========================================
 
 export async function getPersons(): Promise<Person[]> {
@@ -553,7 +404,7 @@ export async function deletePerson(id: number): Promise<void> {
 }
 
 // ========================================
-// SEQUENCE FUNCTIONS (UNCHANGED from v3.1)
+// SEQUENCE FUNCTIONS
 // ========================================
 
 export async function getSequences(): Promise<Sequence[]> {
@@ -580,7 +431,7 @@ export async function deleteSequence(id: number): Promise<void> {
 }
 
 // ========================================
-// PERSON-SEQUENCE RELATIONSHIPS (UNCHANGED from v3.1)
+// PERSON-SEQUENCE RELATIONSHIPS
 // ========================================
 
 export async function assignSequenceToPerson(personId: number, sequenceId: number): Promise<void> {
@@ -655,7 +506,7 @@ export async function getPersonsForSequence(sequenceId: number): Promise<Person[
 }
 
 // ========================================
-// PERSON-FREQUENCY RELATIONSHIPS (UNCHANGED from v3.1)
+// PERSON-FREQUENCY RELATIONSHIPS
 // ========================================
 
 export async function assignFrequencyToPerson(personId: number, frequencyId: number): Promise<void> {
@@ -712,7 +563,7 @@ export async function getFrequenciesForPerson(personId: number): Promise<Frequen
 }
 
 // ========================================
-// CONDITION-FREQUENCY RELATIONSHIPS (UNCHANGED from v3.1)
+// CONDITION-FREQUENCY RELATIONSHIPS
 // ========================================
 
 export async function assignFrequencyToCondition(conditionId: number, frequencyId: number): Promise<void> {
@@ -787,7 +638,7 @@ export async function getConditionsForFrequency(frequencyId: number): Promise<Co
 }
 
 // ========================================
-// CONDITION-SEQUENCE RELATIONSHIPS (UNCHANGED from v3.1)
+// CONDITION-SEQUENCE RELATIONSHIPS
 // ========================================
 
 export async function assignSequenceToCondition(conditionId: number, sequenceId: number): Promise<void> {
@@ -862,7 +713,7 @@ export async function getConditionsForSequence(sequenceId: number): Promise<Cond
 }
 
 // ========================================
-// FAQ FUNCTIONS (UNCHANGED from v3.1)
+// FAQ FUNCTIONS
 // ========================================
 
 export async function getFAQs(): Promise<FAQ[]> {

@@ -1,42 +1,30 @@
 /**
- * auth.tsx v1.5 - Invite Code Support
+ * auth.tsx v1.4 - Complete Auth with Register Function
  * Date: 2025-04-24
  * 
- * CHANGES v1.5:
- * - register() now accepts optional inviteCode parameter
- * - Validates invite code before registration
- * - Sets hasPremium based on invite code
- * - Auto-admin for guido.laucke@gmail.com
- * - Added useIsAdmin() hook
- * - Added useIsPremium() hook
- * 
  * CHANGES v1.4:
- * - Added register() function to useAuth hook
+ * - Added register() function to useAuth hook (was missing!)
  * - RegisterPage can now call useAuth().register()
  * 
+ * CHANGES v1.3:
+ * - Added useAuth hook
+ * - Complete auth context provider
+ * 
+ * CHANGES v1.2:
+ * - Case-insensitive email handling
+ * 
  * DEPENDENCIES:
- * - db.ts v3.2+ (InviteCode support)
+ * - db.ts v3.0+ (openDB, User type)
  * - React 18+
  * 
  * EXPORTS:
  * - useAuth (hook with login, register, logout)
- * - useIsAdmin (hook)
- * - useIsPremium (hook)
  * - AuthProvider (component)
  * - All helper functions
- * 
- * INSTALL:
- * cp ~/Downloads/auth-v1.5-CORRECT-20250424.tsx src/lib/auth.tsx
- * rm -rf node_modules/.vite
  */
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { 
-  openDB, 
-  type User,
-  getInviteCodeByCode,
-  useInviteCode
-} from './db';
+import { openDB, type User } from './db';
 
 // ========================================
 // DATABASE FUNCTIONS
@@ -111,7 +99,7 @@ export function logout() {
 interface AuthContextType {
   user: User | null;
   login: (user: User) => void;
-  register: (name: string, email: string, password: string, inviteCode?: string) => Promise<User>;
+  register: (name: string, email: string, password: string) => Promise<User>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -142,67 +130,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setCurrentUser(user);
   };
 
-  const register = async (
-    name: string, 
-    email: string, 
-    password: string,
-    inviteCode?: string
-  ): Promise<User> => {
-    const emailLower = email.toLowerCase();
-    
+  const register = async (name: string, email: string, password: string): Promise<User> => {
     // Check if user already exists (case-insensitive)
-    const existingUser = await getUserByEmail(emailLower);
+    const existingUser = await getUserByEmail(email);
     if (existingUser) {
       throw new Error('Email already registered');
     }
 
-    // Validate and process invite code
-    let hasPremium = false;
-    let validatedCode: string | undefined;
-    
-    if (inviteCode && inviteCode.trim()) {
-      const code = await getInviteCodeByCode(inviteCode.trim());
-      
-      if (!code) {
-        throw new Error('Invalid invite code');
-      }
-      
-      // Check if expired
-      if (code.expiresAt && new Date() > code.expiresAt) {
-        throw new Error('Invite code has expired');
-      }
-      
-      // Check if max uses reached
-      if (code.currentUses >= code.maxUses) {
-        throw new Error('Invite code has reached maximum uses');
-      }
-      
-      // Check if user already used this code
-      if (code.usedBy.includes(emailLower)) {
-        // Already used - just set premium status
-        hasPremium = code.hasPremium;
-        validatedCode = code.code;
-      } else {
-        // Use the code (increments usage count)
-        const usedCode = await useInviteCode(code.code, emailLower);
-        if (usedCode) {
-          hasPremium = usedCode.hasPremium;
-          validatedCode = usedCode.code;
-        }
-      }
-    }
-    
-    // Determine if admin (auto-admin for guido.laucke@gmail.com)
-    const isAdmin = emailLower === 'guido.laucke@gmail.com';
-    
     // Create new user
     const newUser: User = {
       name,
-      email: emailLower,
+      email: email.toLowerCase(),
       password,
-      isAdmin,
-      hasPremium,
-      inviteCode: validatedCode,
       createdAt: new Date(),
     };
 
@@ -249,20 +188,4 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}
-
-/**
- * Hook to check if current user is admin
- */
-export function useIsAdmin(): boolean {
-  const { user } = useAuth();
-  return user?.isAdmin === true;
-}
-
-/**
- * Hook to check if current user has premium
- */
-export function useIsPremium(): boolean {
-  const { user } = useAuth();
-  return user?.hasPremium === true;
 }
